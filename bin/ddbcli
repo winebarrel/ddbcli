@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+
+Version = '0.1.0'
+
+require 'rubygems'
+require 'ddbcli'
+require 'readline'
+
+options = parse_options
+
+driver = DynamoDB::Driver.new(
+  options.access_key_id,
+  options.secret_access_key,
+  options.ddb_endpoint_or_region)
+
+driver.timeout     = options.timeout
+driver.consistent  = !!options.consistent
+driver.retry_num   = options.retry_num
+driver.retry_intvl = options.retry_intvl
+driver.debug       = options.debug
+
+if not $stdin.tty? or options.command
+  # run mode
+  src = options.command || $stdin.read.strip
+
+  # complements separator
+  unless src =~ /\s*(?:;|\\G)\s*\Z/i
+    src << ';'
+  end
+
+  begin
+    evaluate_query(driver, src)
+  rescue => e
+    print_error(e.message)
+    print_error(e.backtrace) if driver.debug
+    exit 1
+  end
+else
+  # interactive mode
+  src = ''
+  prompt1 = lambda { "#{driver.region || 'unknown'}> " }
+  prompt2 = lambda { "#{' ' * (prompt1.call.length - 3)}-> " }
+
+  while buf = Readline.readline((src.empty? ? prompt1.call : prompt2.call), true)
+    # ignore blank lines
+    if /\A\s*\Z/ =~ buf
+      Readline::HISTORY.pop
+      next
+    end
+
+    if src.empty? and buf =~ /\A\.(.+)/
+      evaluate_command(driver, $1)
+    else
+      begin
+        src << (src.empty? ? buf : ("\n" + buf))
+        evaluate_query(driver, src, :show_rows => true)
+      rescue => e
+        print_error(e.message)
+        print_error(e.backtrace) if driver.debug
+      end
+
+      prompt = src.empty? ? prompt1.call : prompt2.call
+    end
+  end # end of while
+end
