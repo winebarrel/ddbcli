@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
-Version = '0.1.1'
+Version = '0.1.2'
 
 require 'rubygems'
 require 'ddbcli'
