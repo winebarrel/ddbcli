@@ -9,6 +9,7 @@ def print_rownum(data, opts = {})
   rownum = data.to_i
   msg = "// #{rownum} #{rownum > 1 ? 'rows' : 'row'} changed"
   msg << " (%.2f sec)" % opts[:time] if opts[:time]
+  msg << "\n"
   puts msg
 end
 
