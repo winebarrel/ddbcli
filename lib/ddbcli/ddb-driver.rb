@@ -518,7 +518,12 @@ module DynamoDB
           }
         end
 
-        @client.query('BatchWriteItem', req_hash)
+        res_data = @client.query('BatchWriteItem', req_hash)
+
+        until (res_data['UnprocessedItems'] || {}).empty?
+          req_hash['RequestItems'] = res_data['UnprocessedItems']
+          res_data = @client.query('BatchWriteItem', req_hash)
+        end
       end
 
       Rownum.new(n)
