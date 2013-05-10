@@ -102,6 +102,22 @@ def evaluate_command(driver, cmd_arg)
       end
     },
 
+    'iteratable' => lambda {
+      if arg
+        r_arg = /\A#{Regexp.compile(arg)}/i
+
+        if r_arg =~ 'true'
+          driver.iteratable = true
+        elsif r_arg =~ 'false'
+          driver.iteratable = false
+        else
+          print_error('Invalid argument')
+        end
+      else
+        puts driver.iteratable
+      end
+    },
+
     'retry' => lambda {
       case arg
       when nil

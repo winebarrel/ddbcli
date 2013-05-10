@@ -11,6 +11,7 @@ def parse_options
   # default value
   options.timeout     = 60
   options.consistent  = false
+  options.iteratable  = false
   options.retry_num   = 3
   options.retry_intvl = 10
   options.debug       = false
@@ -22,6 +23,7 @@ def parse_options
     opt.on('-e', '--eval=COMMAND')                   {|v| options.command                = v      }
     opt.on('-t', '--timeout=SECOND', Integer)        {|v| options.timeout                = v.to_i }
     opt.on('',   '--consistent-read')                {    options.consistent             = true   }
+    opt.on('',   '--iteratable')                     {    options.iteratable             = true   }
     opt.on('',   '--retry=NUM', Integer)             {|v| options.retry_num              = v.to_i }
     opt.on('',   '--retry-interval=SECOND', Integer) {|v| options.retry_intvl            = v.to_i }
     opt.on('',   '--debug')                          {    options.debug                  = true   }

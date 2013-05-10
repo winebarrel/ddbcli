@@ -19,6 +19,7 @@ driver = DynamoDB::Driver.new(
 
 driver.timeout     = options.timeout
 driver.consistent  = !!options.consistent
+driver.consistent  = !!options.iteratable
 driver.retry_num   = options.retry_num
 driver.retry_intvl = options.retry_intvl
 driver.debug       = options.debug

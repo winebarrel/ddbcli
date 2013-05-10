@@ -23,6 +23,7 @@ module DynamoDB
     def initialize(accessKeyId, secretAccessKey, endpoint_or_region)
       @client = DynamoDB::Client.new(accessKeyId, secretAccessKey, endpoint_or_region)
       @consistent = false
+      @iteratable = false
     end
 
     def_delegators(
@@ -36,6 +37,7 @@ module DynamoDB
       :debug, :'debug=')
 
     attr_accessor :consistent
+    attr_accessor :iteratable
 
     def execute(query, opts = {})
       parsed, script_type, script = Parser.parse(query)
@@ -378,6 +380,13 @@ module DynamoDB
         end
       else
         retval = res_data['Items'].map {|i| convert_to_ruby_value(i) }
+
+        if @iteratable and not parsed.limit
+          while res_data['LastEvaluatedKey']
+            res_data = select_proc.call(res_data['LastEvaluatedKey'])
+            retval.concat(res_data['Items'].map {|i| convert_to_ruby_value(i) })
+          end
+        end
       end
 
       if res_data['LastEvaluatedKey']
