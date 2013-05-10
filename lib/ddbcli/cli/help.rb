@@ -20,6 +20,9 @@ CREATE TABLES table_name (
 ) READ = num, WRITE = num
   creates a table
 
+  CREATE TABLES table_name LIKE another_table_name [READ = num, WRITE = num]
+  creates a table like another table
+
 DROP TABLE table_name
   deletes a table
 
