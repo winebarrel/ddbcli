@@ -9,7 +9,6 @@ module DynamoDB
     extend Forwardable
 
     MAX_NUMBER_BATCH_PROCESS_ITEMS = 25
-    BATCH_WRITE_RETRY_WAIT = 0.1
 
     class Rownum
       def initialize(rownum)
@@ -669,7 +668,6 @@ module DynamoDB
 
       until (res_data['UnprocessedItems'] || {}).empty?
         req_hash['RequestItems'] = res_data['UnprocessedItems']
-        sleep BATCH_WRITE_RETRY_WAIT
         res_data = @client.query('BatchWriteItem', req_hash)
       end
     end
