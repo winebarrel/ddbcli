@@ -22,6 +22,12 @@ def parse_options
     opt.on('-r', '--region=REGION_OR_ENDPOINT')      {|v| options.ddb_endpoint_or_region = v      }
     opt.on('-e', '--eval=COMMAND')                   {|v| options.command                = v      }
     opt.on('-t', '--timeout=SECOND', Integer)        {|v| options.timeout                = v.to_i }
+
+    opt.on('',   '--import=TABLE,JSON_FILE') {|v|
+      v = v.split(/\s*,\s*/, 2)
+      options.import = {:table => v[0], :file => v[1]}
+    }
+
     opt.on('',   '--consistent-read')                {    options.consistent             = true   }
     opt.on('',   '--iteratable')                     {    options.iteratable             = true   }
     opt.on('',   '--retry=NUM', Integer)             {|v| options.retry_num              = v.to_i }

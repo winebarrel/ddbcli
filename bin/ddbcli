@@ -24,7 +24,13 @@ driver.retry_num   = options.retry_num
 driver.retry_intvl = options.retry_intvl
 driver.debug       = options.debug
 
-if not $stdin.tty? or options.command
+if options.import
+  # import mode
+  table, file = options.import.values_at(:table, :file)
+  items = open(file) {|f| JSON.load(f) }
+  n = driver.import(table, items)
+  print_rownum(n)
+elsif not $stdin.tty? or options.command
 
   # run mode
   src = options.command || $stdin.read.strip
