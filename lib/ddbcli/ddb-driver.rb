@@ -518,12 +518,7 @@ module DynamoDB
           }
         end
 
-        res_data = @client.query('BatchWriteItem', req_hash)
-
-        until (res_data['UnprocessedItems'] || {}).empty?
-          req_hash['RequestItems'] = res_data['UnprocessedItems']
-          res_data = @client.query('BatchWriteItem', req_hash)
-        end
+        batch_write_item(req_hash)
       end
 
       Rownum.new(n)
@@ -648,7 +643,7 @@ module DynamoDB
           end
         end
 
-        @client.query('BatchWriteItem', req_hash)
+        batch_write_item(req_hash)
         n += chunk.length
       end
 
@@ -657,6 +652,15 @@ module DynamoDB
 
     def str_to_num(str)
       str =~ /\./ ? str.to_f : str.to_i
+    end
+
+    def batch_write_item(req_hash)
+      res_data = @client.query('BatchWriteItem', req_hash)
+
+      until (res_data['UnprocessedItems'] || {}).empty?
+        req_hash['RequestItems'] = res_data['UnprocessedItems']
+        res_data = @client.query('BatchWriteItem', req_hash)
+      end
     end
 
   end # Driver
