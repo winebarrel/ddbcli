@@ -3,6 +3,9 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
 Version = '0.1.2'
 
+HISTORY_FILE = File.join((ENV['HOME'] || ENV['USERPROFILE'] || '.'), '.ddbcli_history')
+HISTSIZE = 500
+
 require 'rubygems'
 require 'ddbcli'
 require 'readline'
@@ -21,6 +24,7 @@ driver.retry_intvl = options.retry_intvl
 driver.debug       = options.debug
 
 if not $stdin.tty? or options.command
+
   # run mode
   src = options.command || $stdin.read.strip
 
@@ -36,7 +40,19 @@ if not $stdin.tty? or options.command
     print_error(e.backtrace) if driver.debug
     exit 1
   end
+
 else
+
+  # load history file
+  if File.exist?(HISTORY_FILE)
+    open(HISTORY_FILE) do |f|
+      f.each_line do |line|
+        line = line.strip
+        Readline::HISTORY.push(line) unless line.empty?
+      end
+    end
+  end
+
   # interactive mode
   src = ''
   prompt1 = lambda { "#{driver.region || 'unknown'}> " }
@@ -63,4 +79,15 @@ else
       prompt = src.empty? ? prompt1.call : prompt2.call
     end
   end # end of while
+
+  # save history file
+  unless Readline::HISTORY.empty?
+    open(HISTORY_FILE, 'wb') do |f|
+      (Readline::HISTORY.to_a.slice(-(Readline::HISTORY.length < HISTSIZE ? Readline::HISTORY.length : HISTSIZE)..-1) || []).each do |line|
+        next if /\A\s*\Z/ =~ line
+        f.puts line
+      end
+    end
+  end
+
 end
