@@ -13,6 +13,14 @@ rule
          {
            [val[0], :shell, val[1]]
          }
+       | RUBY_SCRIPT
+         {
+           [struct(:NULL), :ruby, val[0]]
+         }
+       | SHELL_SCRIPT
+         {
+           [struct(:NULL), :shell, val[0]]
+         }
 
   query : show_stmt
         | alter_stmt

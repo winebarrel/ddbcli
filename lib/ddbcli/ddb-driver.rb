@@ -86,6 +86,8 @@ module DynamoDB
                  else
                    []
                  end
+               when :NULL
+                 nil
                else
                  raise 'must not happen'
                end

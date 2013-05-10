@@ -14,7 +14,7 @@ module DynamoDB
 
 class Parser < Racc::Parser
 
-module_eval(<<'...end ddb-parser.y/module_eval...', 'ddb-parser.y', 461)
+module_eval(<<'...end ddb-parser.y/module_eval...', 'ddb-parser.y', 469)
 
 KEYWORDS = %w(
   ADD
@@ -154,141 +154,145 @@ end
 ##### State transition tables begin ###
 
 racc_action_table = [
-    16,   136,    51,    19,   149,   136,    17,    18,   136,    50,
-   136,   133,   136,    84,    46,   133,   191,    89,   133,   136,
-   133,    91,   133,   136,    20,    21,    22,    23,   136,   133,
-   136,    24,    48,   133,   136,   162,   136,   190,   133,    44,
-   133,    46,   130,   104,   133,   199,   133,   200,    49,    25,
-   134,   135,    26,    27,   134,   135,    28,   134,   135,   134,
-   135,   134,   135,    92,    89,    63,    44,    93,   134,   135,
-   169,    94,   134,   135,   163,   164,    96,   134,   135,   134,
-   135,   104,    46,   134,   135,   134,   135,   177,   170,   171,
-   172,   173,   174,   176,   178,   181,   182,   183,    43,   169,
-    76,    76,   110,    77,    77,    98,    42,    44,   118,   119,
-   120,   118,   119,   120,   211,   210,   194,   170,   171,   172,
-   173,   174,   248,   201,   241,   202,   240,   266,   241,   267,
-    32,    33,    34,   118,   119,   120,   260,   261,   262,   144,
-   203,   145,   204,    67,    68,    30,    31,    67,    68,    99,
-   100,   101,    89,    83,   105,    87,   109,   110,   113,   114,
-   115,   116,    82,   122,   123,   124,   110,   126,    87,    81,
-    80,   138,   139,   142,    55,    79,   146,   147,    78,    87,
-   151,   154,   155,   156,    55,   158,    74,    55,   109,    73,
-   168,    72,   184,   185,   186,   187,   188,    55,    71,   192,
-    70,   196,    98,   198,    69,    65,    64,   142,    61,   136,
-    60,    59,   212,   214,   215,   216,   217,   154,    58,    57,
-   221,   122,   110,   224,   225,   226,   227,   228,   229,    56,
-   232,   233,    55,   235,   151,    55,    53,   239,    52,   242,
-    40,    55,    39,    38,   247,    37,   251,   252,   253,   251,
-   255,   256,    36,   258,    35,   263,   265,    29,   268 ]
+     3,     4,    18,   138,    53,    21,   151,   138,    19,    20,
+   138,    52,   138,   135,   138,    86,    48,   135,   193,    91,
+   135,   138,   135,    93,   135,   138,    22,    23,    24,    25,
+   138,   135,   138,    26,    50,   135,   138,   164,   138,   192,
+   135,    46,   135,    48,   132,   106,   135,   201,   135,   202,
+    51,    27,   136,   137,    28,    29,   136,   137,    30,   136,
+   137,   136,   137,   136,   137,    94,    91,    65,    46,    95,
+   136,   137,   171,    96,   136,   137,   165,   166,    98,   136,
+   137,   136,   137,   106,    48,   136,   137,   136,   137,   179,
+   172,   173,   174,   175,   176,   178,   180,   183,   184,   185,
+    45,   171,    78,    78,   112,    79,    79,   100,    44,    46,
+   120,   121,   122,   120,   121,   122,   213,   212,   196,   172,
+   173,   174,   175,   176,   250,   203,   243,   204,   242,   268,
+   243,   269,    34,    35,    36,   120,   121,   122,   262,   263,
+   264,   146,   205,   147,   206,    69,    70,    32,    33,    69,
+    70,   101,   102,   103,    91,    85,   107,    89,   111,   112,
+   115,   116,   117,   118,    84,   124,   125,   126,   112,   128,
+    89,    83,    82,   140,   141,   144,    57,    81,   148,   149,
+    80,    89,   153,   156,   157,   158,    57,   160,    76,    57,
+   111,    75,   170,    74,   186,   187,   188,   189,   190,    57,
+    73,   194,    72,   198,   100,   200,    71,    67,    66,   144,
+    63,   138,    62,    61,   214,   216,   217,   218,   219,   156,
+    60,    59,   223,   124,   112,   226,   227,   228,   229,   230,
+   231,    58,   234,   235,    57,   237,   153,    57,    55,   241,
+    54,   244,    42,    57,    41,    40,   249,    39,   253,   254,
+   255,   253,   257,   258,    38,   260,    37,   265,   267,    31,
+   270 ]
 
 racc_action_check = [
-     0,   139,    26,     0,   117,   105,     0,     0,   175,    26,
-   177,   139,   193,    65,    24,   105,   151,    70,   175,   227,
-   177,    71,   193,   241,     0,     0,     0,     0,   239,   227,
-   235,     0,    25,   241,   214,   136,   194,   151,   239,    24,
-   235,    43,   105,    85,   214,   159,   194,   159,    25,     0,
-   139,   139,     0,     0,   105,   105,     0,   175,   175,   177,
-   177,   193,   193,    72,    85,    43,    43,    76,   227,   227,
-   142,    77,   241,   241,   136,   136,    78,   239,   239,   235,
-   235,   106,    23,   214,   214,   194,   194,   142,   142,   142,
-   142,   142,   142,   142,   142,   142,   142,   142,    23,   154,
-   116,    57,   106,   116,    57,    79,    23,    23,   217,   217,
-   217,   256,   256,   256,   178,   178,   154,   154,   154,   154,
-   154,   154,   245,   160,   245,   160,   230,   264,   230,   264,
-    16,    16,    16,    96,    96,    96,   258,   258,   258,   112,
-   161,   112,   161,    48,    48,     2,     2,    69,    69,    80,
-    81,    82,    84,    64,    87,    88,    89,    91,    92,    93,
-    94,    95,    63,    97,    98,    99,   100,   101,   104,    62,
-    61,   107,   109,   110,   111,    60,   114,   115,    58,    66,
-   121,   122,   123,   124,   125,   126,    56,   137,   138,    55,
-   140,    52,   144,   145,   146,   147,   149,   150,    51,   152,
-    50,   155,   156,   158,    49,    47,    45,   168,    42,   176,
-    41,    38,   183,   184,   186,   187,   188,   192,    37,    35,
-   196,   197,   198,   200,   202,   204,   208,   211,   213,    34,
-   215,   216,    32,   220,   222,   223,    29,   229,    27,   234,
-    22,   236,    21,    20,   242,    19,   247,   249,   251,   252,
-   253,   255,    18,   257,    17,   262,   263,     1,   267 ]
+     0,     0,     0,   141,    28,     0,   119,   107,     0,     0,
+   177,    28,   179,   141,   195,    67,    26,   107,   153,    72,
+   177,   229,   179,    73,   195,   243,     0,     0,     0,     0,
+   241,   229,   237,     0,    27,   243,   216,   138,   196,   153,
+   241,    26,   237,    45,   107,    87,   216,   161,   196,   161,
+    27,     0,   141,   141,     0,     0,   107,   107,     0,   177,
+   177,   179,   179,   195,   195,    74,    87,    45,    45,    78,
+   229,   229,   144,    79,   243,   243,   138,   138,    80,   241,
+   241,   237,   237,   108,    25,   216,   216,   196,   196,   144,
+   144,   144,   144,   144,   144,   144,   144,   144,   144,   144,
+    25,   156,   118,    59,   108,   118,    59,    81,    25,    25,
+   219,   219,   219,   258,   258,   258,   180,   180,   156,   156,
+   156,   156,   156,   156,   247,   162,   247,   162,   232,   266,
+   232,   266,    18,    18,    18,    98,    98,    98,   260,   260,
+   260,   114,   163,   114,   163,    50,    50,     2,     2,    71,
+    71,    82,    83,    84,    86,    66,    89,    90,    91,    93,
+    94,    95,    96,    97,    65,    99,   100,   101,   102,   103,
+   106,    64,    63,   109,   111,   112,   113,    62,   116,   117,
+    60,    68,   123,   124,   125,   126,   127,   128,    58,   139,
+   140,    57,   142,    54,   146,   147,   148,   149,   151,   152,
+    53,   154,    52,   157,   158,   160,    51,    49,    47,   170,
+    44,   178,    43,    40,   185,   186,   188,   189,   190,   194,
+    39,    37,   198,   199,   200,   202,   204,   206,   210,   213,
+   215,    36,   217,   218,    34,   222,   224,   225,    31,   231,
+    29,   236,    24,   238,    23,    22,   244,    21,   249,   251,
+   253,   254,   255,   257,    20,   259,    19,   264,   265,     1,
+   269 ]
 
 racc_action_pointer = [
-    -4,   257,   143,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,   nil,   nil,   nil,   nil,   nil,   125,   246,   243,   237,
-   235,   233,   231,    73,     5,    23,   -23,   180,   nil,   236,
-   nil,   nil,   180,   nil,   221,   210,   nil,   209,   202,   nil,
-   nil,   178,   196,    32,   nil,   191,   nil,   173,    89,   195,
-   191,   166,   182,   nil,   nil,   167,   177,    81,   166,   nil,
-   166,   136,   137,   150,   144,     4,   170,   nil,   nil,    93,
-   -19,    12,    51,   nil,   nil,   nil,    46,    50,    67,    94,
-   136,   141,   117,   nil,   116,    28,   nil,   133,   146,   147,
-   nil,   121,   149,   137,   138,   148,   116,   127,   140,   133,
-   130,   154,   nil,   nil,   159,    -7,    66,   134,   nil,   151,
-   164,   122,   126,   nil,   161,   162,    80,   -10,   nil,   nil,
-   nil,   130,   172,   170,   174,   132,   153,   nil,   nil,   nil,
-   nil,   nil,   nil,   nil,   nil,   nil,    13,   135,   179,   -11,
-   153,   nil,    49,   nil,   133,   184,   171,   175,   nil,   181,
-   145,   -14,   162,   nil,    78,   192,   191,   nil,   194,    32,
-   110,   127,   nil,   nil,   nil,   nil,   nil,   nil,   198,   nil,
-   nil,   nil,   nil,   nil,   nil,    -4,   197,    -2,    66,   nil,
-   nil,   nil,   nil,   165,   201,   nil,   193,   194,   207,   nil,
-   nil,   nil,   208,     0,    24,   nil,   207,   185,   186,   nil,
-   201,   nil,   163,   nil,   163,   nil,   nil,   nil,   189,   nil,
-   nil,   178,   nil,   213,    22,   208,   209,    91,   nil,   nil,
-   196,   nil,   184,   183,   nil,   nil,   nil,     7,   nil,   225,
-   113,   nil,   nil,   nil,   223,    18,   189,   nil,   nil,    16,
-   nil,    11,   229,   nil,   nil,   109,   nil,   222,   nil,   232,
-   nil,   239,   225,   238,   nil,   242,    94,   240,   111,   nil,
-   nil,   nil,   243,   247,   114,   nil,   nil,   249,   nil ]
+    -2,   259,   145,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   127,   248,
+   245,   239,   237,   235,   233,    75,     7,    25,   -21,   182,
+   nil,   238,   nil,   nil,   182,   nil,   223,   212,   nil,   211,
+   204,   nil,   nil,   180,   198,    34,   nil,   193,   nil,   175,
+    91,   197,   193,   168,   184,   nil,   nil,   169,   179,    83,
+   168,   nil,   168,   138,   139,   152,   146,     6,   172,   nil,
+   nil,    95,   -17,    14,    53,   nil,   nil,   nil,    48,    52,
+    69,    96,   138,   143,   119,   nil,   118,    30,   nil,   135,
+   148,   149,   nil,   123,   151,   139,   140,   150,   118,   129,
+   142,   135,   132,   156,   nil,   nil,   161,    -5,    68,   136,
+   nil,   153,   166,   124,   128,   nil,   163,   164,    82,    -8,
+   nil,   nil,   nil,   132,   174,   172,   176,   134,   155,   nil,
+   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,    15,   137,
+   181,    -9,   155,   nil,    51,   nil,   135,   186,   173,   177,
+   nil,   183,   147,   -12,   164,   nil,    80,   194,   193,   nil,
+   196,    34,   112,   129,   nil,   nil,   nil,   nil,   nil,   nil,
+   200,   nil,   nil,   nil,   nil,   nil,   nil,    -2,   199,     0,
+    68,   nil,   nil,   nil,   nil,   167,   203,   nil,   195,   196,
+   209,   nil,   nil,   nil,   210,     2,    26,   nil,   209,   187,
+   188,   nil,   203,   nil,   165,   nil,   165,   nil,   nil,   nil,
+   191,   nil,   nil,   180,   nil,   215,    24,   210,   211,    93,
+   nil,   nil,   198,   nil,   186,   185,   nil,   nil,   nil,     9,
+   nil,   227,   115,   nil,   nil,   nil,   225,    20,   191,   nil,
+   nil,    18,   nil,    13,   231,   nil,   nil,   111,   nil,   224,
+   nil,   234,   nil,   241,   227,   240,   nil,   244,    96,   242,
+   113,   nil,   nil,   nil,   245,   249,   116,   nil,   nil,   251,
+   nil ]
 
 racc_action_default = [
-  -123,  -123,    -1,    -4,    -5,    -6,    -7,    -8,    -9,   -10,
-   -11,   -12,   -13,   -14,   -15,   -16,  -123,  -123,  -123,  -123,
-  -123,  -123,  -123,  -123,  -123,  -123,  -123,  -123,  -106,  -123,
-    -2,    -3,   -84,   -18,  -123,  -123,   -21,  -123,  -123,   -40,
-   -41,  -123,  -123,  -123,   -47,   -48,   -49,  -123,  -123,  -123,
-  -123,  -123,  -123,   269,   -17,  -123,  -123,  -123,  -123,   -39,
-  -123,  -123,  -123,  -123,  -123,  -123,  -123,   -88,   -89,  -123,
-  -123,  -123,  -123,   -85,   -19,   -20,  -123,  -123,  -123,   -51,
-  -123,  -123,  -123,   -50,  -123,  -123,   -90,  -123,  -123,  -123,
-   -97,   -66,  -123,  -123,  -123,  -123,  -123,   -53,  -123,  -123,
-   -66,  -123,   -46,   -86,  -123,  -123,   -66,   -93,   -94,  -123,
-  -123,   -84,  -123,  -100,  -123,  -123,  -123,  -123,   -26,   -27,
-   -28,   -81,  -123,  -123,  -123,   -84,  -123,   -91,   -92,  -107,
-  -108,  -109,  -110,  -111,  -112,  -113,  -123,   -84,  -123,  -123,
-   -67,   -68,  -123,   -98,  -123,  -123,  -123,  -123,   -22,   -23,
-   -84,  -123,   -54,   -55,  -123,  -123,   -51,   -44,  -123,  -123,
-  -123,  -123,  -117,  -119,  -121,   -87,   -95,   -96,  -123,   -60,
-   -61,   -62,   -63,   -64,   -65,  -123,  -123,  -123,  -123,   -74,
-   -75,   -76,   -77,  -123,  -123,  -101,  -123,  -123,  -123,   -42,
-   -82,   -83,  -123,  -123,  -123,   -59,  -123,   -53,   -66,  -114,
-  -123,  -115,  -123,  -116,  -123,   -69,   -70,   -71,  -123,   -73,
-   -79,  -123,   -78,   -99,  -123,  -123,  -123,  -123,   -56,   -57,
-  -123,   -52,   -81,   -84,  -118,  -120,  -122,  -123,   -80,  -123,
-  -123,  -104,   -29,   -30,  -123,  -123,   -84,   -45,   -72,  -123,
-  -102,  -123,   -24,   -58,   -43,  -123,  -105,  -123,  -103,   -25,
-   -31,  -123,  -123,  -123,   -32,  -123,  -123,  -123,  -123,   -33,
-   -34,   -35,  -123,  -123,  -123,   -37,   -36,  -123,   -38 ]
+  -125,  -125,    -1,    -4,    -5,    -6,    -7,    -8,    -9,   -10,
+   -11,   -12,   -13,   -14,   -15,   -16,   -17,   -18,  -125,  -125,
+  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,
+  -108,  -125,    -2,    -3,   -86,   -20,  -125,  -125,   -23,  -125,
+  -125,   -42,   -43,  -125,  -125,  -125,   -49,   -50,   -51,  -125,
+  -125,  -125,  -125,  -125,  -125,   271,   -19,  -125,  -125,  -125,
+  -125,   -41,  -125,  -125,  -125,  -125,  -125,  -125,  -125,   -90,
+   -91,  -125,  -125,  -125,  -125,   -87,   -21,   -22,  -125,  -125,
+  -125,   -53,  -125,  -125,  -125,   -52,  -125,  -125,   -92,  -125,
+  -125,  -125,   -99,   -68,  -125,  -125,  -125,  -125,  -125,   -55,
+  -125,  -125,   -68,  -125,   -48,   -88,  -125,  -125,   -68,   -95,
+   -96,  -125,  -125,   -86,  -125,  -102,  -125,  -125,  -125,  -125,
+   -28,   -29,   -30,   -83,  -125,  -125,  -125,   -86,  -125,   -93,
+   -94,  -109,  -110,  -111,  -112,  -113,  -114,  -115,  -125,   -86,
+  -125,  -125,   -69,   -70,  -125,  -100,  -125,  -125,  -125,  -125,
+   -24,   -25,   -86,  -125,   -56,   -57,  -125,  -125,   -53,   -46,
+  -125,  -125,  -125,  -125,  -119,  -121,  -123,   -89,   -97,   -98,
+  -125,   -62,   -63,   -64,   -65,   -66,   -67,  -125,  -125,  -125,
+  -125,   -76,   -77,   -78,   -79,  -125,  -125,  -103,  -125,  -125,
+  -125,   -44,   -84,   -85,  -125,  -125,  -125,   -61,  -125,   -55,
+   -68,  -116,  -125,  -117,  -125,  -118,  -125,   -71,   -72,   -73,
+  -125,   -75,   -81,  -125,   -80,  -101,  -125,  -125,  -125,  -125,
+   -58,   -59,  -125,   -54,   -83,   -86,  -120,  -122,  -124,  -125,
+   -82,  -125,  -125,  -106,   -31,   -32,  -125,  -125,   -86,   -47,
+   -74,  -125,  -104,  -125,   -26,   -60,   -45,  -125,  -107,  -125,
+  -105,   -27,   -33,  -125,  -125,  -125,   -34,  -125,  -125,  -125,
+  -125,   -35,   -36,   -37,  -125,  -125,  -125,   -39,   -38,  -125,
+   -40 ]
 
 racc_goto_table = [
-    54,   117,   129,   111,   121,   150,    97,   153,    75,   108,
-   141,    85,   125,   230,    66,    90,   179,   250,   137,    41,
-    47,     1,   254,   249,    15,   259,   264,    14,   195,   102,
-   103,    13,    12,   106,    95,    88,   167,    11,   245,    62,
-    10,   152,     9,   193,     8,     7,   140,     6,   175,   207,
-   209,   180,     5,     4,   127,   128,   107,     3,   166,   112,
-   213,     2,   159,   160,   161,   nil,   nil,   148,   205,   nil,
-   nil,   nil,   206,   nil,   208,   nil,   nil,   218,   nil,   143,
-   nil,   nil,   nil,   197,   nil,   nil,   nil,   nil,   nil,   nil,
-   219,   220,   nil,   157,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,   nil,   nil,   nil,   222,   165,   236,   nil,   nil,   nil,
-   223,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   189,   nil,
-   nil,   nil,   234,   nil,   238,   nil,   nil,   nil,   nil,   nil,
-   nil,   nil,   243,   nil,   nil,   nil,   nil,   nil,   246,   nil,
+    56,   119,   131,   113,   123,   152,    99,   155,    77,   110,
+   143,    87,   127,   232,    68,    92,   181,   252,   139,    43,
+    49,     1,   256,   251,    17,   261,   266,    16,   197,   104,
+   105,    15,    14,   108,    97,    90,   169,    13,   247,    64,
+    12,   154,    11,   195,    10,     9,   142,     8,   177,   209,
+   211,   182,     7,     6,   129,   130,   109,     5,   168,   114,
+   215,     2,   161,   162,   163,   nil,   nil,   150,   207,   nil,
+   nil,   nil,   208,   nil,   210,   nil,   nil,   220,   nil,   145,
+   nil,   nil,   nil,   199,   nil,   nil,   nil,   nil,   nil,   nil,
+   221,   222,   nil,   159,   nil,   nil,   nil,   nil,   nil,   nil,
+   nil,   nil,   nil,   nil,   224,   167,   238,   nil,   nil,   nil,
+   225,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   191,   nil,
+   nil,   nil,   236,   nil,   240,   nil,   nil,   nil,   nil,   nil,
+   nil,   nil,   245,   nil,   nil,   nil,   nil,   nil,   248,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,   257,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+   nil,   259,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,   237,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-   nil,   nil,   nil,   nil,   244 ]
+   nil,   239,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
+   nil,   nil,   nil,   nil,   246 ]
 
 racc_goto_check = [
     16,    19,    34,    28,    26,    27,    25,    32,    17,    47,
@@ -315,25 +319,27 @@ racc_goto_check = [
 
 racc_goto_pointer = [
    nil,    21,    61,    57,    53,    52,    47,    45,    44,    42,
-    40,    37,    32,    31,    27,    24,   -32,   -49,   -44,   -95,
-  -224,  -230,  -233,  -237,    -4,   -73,   -93,  -116,   -88,   -55,
-   nil,   -81,  -115,  -111,  -103,  -126,   -64,  -100,   -94,  -127,
-  -128,   -91,   -34,   -55,   -50,   -50,   -33,   -80,   -33,  -124,
-  -201,   nil,   -74,   -73,   -72 ]
+    40,    37,    32,    31,    27,    24,   -34,   -51,   -46,   -97,
+  -226,  -232,  -235,  -239,    -6,   -75,   -95,  -118,   -90,   -57,
+   nil,   -83,  -117,  -113,  -105,  -128,   -66,  -102,   -96,  -129,
+  -130,   -93,   -36,   -57,   -52,   -52,   -35,   -82,   -35,  -126,
+  -203,   nil,   -76,   -75,   -74 ]
 
 racc_goto_default = [
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
-    45,   nil,   nil,   nil,   231,   nil,   nil,   nil,   nil,   132,
-   nil,   nil,   nil,   nil,    86,   nil,   nil,   nil,   nil,   nil,
-   nil,   131,   nil,   nil,   nil ]
+    47,   nil,   nil,   nil,   233,   nil,   nil,   nil,   nil,   134,
+   nil,   nil,   nil,   nil,    88,   nil,   nil,   nil,   nil,   nil,
+   nil,   133,   nil,   nil,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
   1, 64, :_reduce_1,
   2, 64, :_reduce_2,
   2, 64, :_reduce_3,
+  1, 64, :_reduce_4,
+  1, 64, :_reduce_5,
   1, 65, :_reduce_none,
   1, 65, :_reduce_none,
   1, 65, :_reduce_none,
@@ -347,96 +353,96 @@ racc_reduce_table = [
   1, 65, :_reduce_none,
   1, 65, :_reduce_none,
   1, 65, :_reduce_none,
-  3, 66, :_reduce_17,
-  2, 66, :_reduce_18,
-  4, 66, :_reduce_19,
-  4, 67, :_reduce_20,
-  2, 68, :_reduce_21,
-  7, 69, :_reduce_22,
-  3, 81, :_reduce_23,
-  7, 81, :_reduce_24,
-  9, 81, :_reduce_25,
-  1, 82, :_reduce_26,
-  1, 82, :_reduce_27,
+  3, 66, :_reduce_19,
+  2, 66, :_reduce_20,
+  4, 66, :_reduce_21,
+  4, 67, :_reduce_22,
+  2, 68, :_reduce_23,
+  7, 69, :_reduce_24,
+  3, 81, :_reduce_25,
+  7, 81, :_reduce_26,
+  9, 81, :_reduce_27,
   1, 82, :_reduce_28,
-  7, 80, :_reduce_29,
-  7, 80, :_reduce_30,
-  1, 83, :_reduce_31,
-  3, 83, :_reduce_32,
-  7, 84, :_reduce_33,
-  1, 85, :_reduce_34,
-  1, 85, :_reduce_35,
-  4, 85, :_reduce_36,
-  1, 86, :_reduce_37,
-  3, 86, :_reduce_38,
-  3, 70, :_reduce_39,
-  2, 71, :_reduce_40,
-  2, 71, :_reduce_41,
-  8, 72, :_reduce_42,
-  11, 72, :_reduce_43,
-  7, 73, :_reduce_44,
-  10, 73, :_reduce_45,
-  5, 74, :_reduce_46,
-  1, 87, :_reduce_47,
-  1, 87, :_reduce_48,
-  1, 93, :_reduce_49,
-  3, 93, :_reduce_50,
+  1, 82, :_reduce_29,
+  1, 82, :_reduce_30,
+  7, 80, :_reduce_31,
+  7, 80, :_reduce_32,
+  1, 83, :_reduce_33,
+  3, 83, :_reduce_34,
+  7, 84, :_reduce_35,
+  1, 85, :_reduce_36,
+  1, 85, :_reduce_37,
+  4, 85, :_reduce_38,
+  1, 86, :_reduce_39,
+  3, 86, :_reduce_40,
+  3, 70, :_reduce_41,
+  2, 71, :_reduce_42,
+  2, 71, :_reduce_43,
+  8, 72, :_reduce_44,
+  11, 72, :_reduce_45,
+  7, 73, :_reduce_46,
+  10, 73, :_reduce_47,
+  5, 74, :_reduce_48,
+  1, 87, :_reduce_49,
+  1, 87, :_reduce_50,
+  1, 93, :_reduce_51,
+  3, 93, :_reduce_52,
   0, 88, :_reduce_none,
-  5, 88, :_reduce_52,
+  5, 88, :_reduce_54,
   0, 89, :_reduce_none,
-  2, 89, :_reduce_54,
-  1, 94, :_reduce_55,
-  3, 94, :_reduce_56,
-  3, 95, :_reduce_57,
-  5, 95, :_reduce_58,
+  2, 89, :_reduce_56,
+  1, 94, :_reduce_57,
+  3, 94, :_reduce_58,
+  3, 95, :_reduce_59,
+  5, 95, :_reduce_60,
   1, 96, :_reduce_none,
-  1, 98, :_reduce_60,
-  1, 98, :_reduce_61,
   1, 98, :_reduce_62,
   1, 98, :_reduce_63,
   1, 98, :_reduce_64,
+  1, 98, :_reduce_65,
+  1, 98, :_reduce_66,
   1, 98, :_reduce_none,
   0, 91, :_reduce_none,
-  2, 91, :_reduce_67,
-  1, 99, :_reduce_68,
-  3, 99, :_reduce_69,
-  3, 100, :_reduce_70,
-  3, 100, :_reduce_71,
-  5, 100, :_reduce_72,
+  2, 91, :_reduce_69,
+  1, 99, :_reduce_70,
+  3, 99, :_reduce_71,
+  3, 100, :_reduce_72,
   3, 100, :_reduce_73,
+  5, 100, :_reduce_74,
+  3, 100, :_reduce_75,
   1, 101, :_reduce_none,
   1, 101, :_reduce_none,
-  1, 101, :_reduce_76,
+  1, 101, :_reduce_78,
   1, 104, :_reduce_none,
-  2, 104, :_reduce_78,
-  1, 103, :_reduce_79,
-  2, 103, :_reduce_80,
+  2, 104, :_reduce_80,
+  1, 103, :_reduce_81,
+  2, 103, :_reduce_82,
   0, 90, :_reduce_none,
-  2, 90, :_reduce_82,
-  2, 90, :_reduce_83,
+  2, 90, :_reduce_84,
+  2, 90, :_reduce_85,
   0, 79, :_reduce_none,
-  2, 79, :_reduce_85,
-  5, 75, :_reduce_86,
-  7, 75, :_reduce_87,
-  1, 105, :_reduce_88,
-  1, 105, :_reduce_89,
-  1, 106, :_reduce_90,
-  3, 106, :_reduce_91,
-  3, 107, :_reduce_92,
-  2, 92, :_reduce_93,
-  1, 109, :_reduce_94,
-  3, 109, :_reduce_95,
-  3, 110, :_reduce_96,
-  4, 76, :_reduce_97,
-  6, 76, :_reduce_98,
-  8, 77, :_reduce_99,
-  1, 111, :_reduce_100,
-  3, 111, :_reduce_101,
-  3, 112, :_reduce_102,
-  5, 112, :_reduce_103,
-  1, 113, :_reduce_104,
-  3, 113, :_reduce_105,
-  1, 78, :_reduce_106,
+  2, 79, :_reduce_87,
+  5, 75, :_reduce_88,
+  7, 75, :_reduce_89,
+  1, 105, :_reduce_90,
+  1, 105, :_reduce_91,
+  1, 106, :_reduce_92,
+  3, 106, :_reduce_93,
+  3, 107, :_reduce_94,
+  2, 92, :_reduce_95,
+  1, 109, :_reduce_96,
+  3, 109, :_reduce_97,
+  3, 110, :_reduce_98,
+  4, 76, :_reduce_99,
+  6, 76, :_reduce_100,
+  8, 77, :_reduce_101,
+  1, 111, :_reduce_102,
+  3, 111, :_reduce_103,
+  3, 112, :_reduce_104,
+  5, 112, :_reduce_105,
+  1, 113, :_reduce_106,
+  3, 113, :_reduce_107,
+  1, 78, :_reduce_108,
   1, 108, :_reduce_none,
   1, 108, :_reduce_none,
   1, 97, :_reduce_none,
@@ -444,19 +450,19 @@ racc_reduce_table = [
   1, 114, :_reduce_none,
   1, 114, :_reduce_none,
   1, 114, :_reduce_none,
-  3, 102, :_reduce_114,
-  3, 102, :_reduce_115,
   3, 102, :_reduce_116,
-  1, 115, :_reduce_117,
-  3, 115, :_reduce_118,
-  1, 116, :_reduce_119,
-  3, 116, :_reduce_120,
-  1, 117, :_reduce_121,
-  3, 117, :_reduce_122 ]
+  3, 102, :_reduce_117,
+  3, 102, :_reduce_118,
+  1, 115, :_reduce_119,
+  3, 115, :_reduce_120,
+  1, 116, :_reduce_121,
+  3, 116, :_reduce_122,
+  1, 117, :_reduce_123,
+  3, 117, :_reduce_124 ]
 
-racc_reduce_n = 123
+racc_reduce_n = 125
 
-racc_shift_n = 269
+racc_shift_n = 271
 
 racc_token_table = {
   false => 0,
@@ -690,9 +696,19 @@ module_eval(<<'.,.,', 'ddb-parser.y', 13)
   end
 .,.,
 
-# reduce 4 omitted
+module_eval(<<'.,.,', 'ddb-parser.y', 17)
+  def _reduce_4(val, _values)
+               [struct(:NULL), :ruby, val[0]]
+         
+  end
+.,.,
 
-# reduce 5 omitted
+module_eval(<<'.,.,', 'ddb-parser.y', 21)
+  def _reduce_5(val, _values)
+               [struct(:NULL), :shell, val[0]]
+         
+  end
+.,.,
 
 # reduce 6 omitted
 
@@ -716,589 +732,589 @@ module_eval(<<'.,.,', 'ddb-parser.y', 13)
 
 # reduce 16 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 32)
-  def _reduce_17(val, _values)
+# reduce 17 omitted
+
+# reduce 18 omitted
+
+module_eval(<<'.,.,', 'ddb-parser.y', 40)
+  def _reduce_19(val, _values)
                     struct(:SHOW_TABLES, :limit => val[2])
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 36)
-  def _reduce_18(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 44)
+  def _reduce_20(val, _values)
                     struct(:SHOW_REGIONS)
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 40)
-  def _reduce_19(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 48)
+  def _reduce_21(val, _values)
                     struct(:SHOW_CREATE_TABLE, :table => val[3])
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 45)
-  def _reduce_20(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 53)
+  def _reduce_22(val, _values)
                     struct(:ALTER_TABLE, :table => val[2], :capacity => val[3])
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 50)
-  def _reduce_21(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 58)
+  def _reduce_23(val, _values)
                  struct(:USE, :endpoint_or_region => val[1])
            
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 55)
-  def _reduce_22(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 63)
+  def _reduce_24(val, _values)
                       struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 60)
-  def _reduce_23(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 68)
+  def _reduce_25(val, _values)
                             {:hash => {:name => val[0], :type => val[1]}, :range => nil, :indices => nil}
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 64)
-  def _reduce_24(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 72)
+  def _reduce_26(val, _values)
                             {:hash => {:name => val[0], :type => val[1]}, :range => {:name => val[4], :type => val[5]}, :indices => nil}
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 68)
-  def _reduce_25(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 76)
+  def _reduce_27(val, _values)
                             {:hash => {:name => val[0], :type => val[1]}, :range => {:name => val[4], :type => val[5]}, :indices => val[8]}
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 73)
-  def _reduce_26(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 81)
+  def _reduce_28(val, _values)
                          'S'
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 77)
-  def _reduce_27(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 85)
+  def _reduce_29(val, _values)
                          'N'
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 81)
-  def _reduce_28(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 89)
+  def _reduce_30(val, _values)
                          'B'
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 86)
-  def _reduce_29(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 94)
+  def _reduce_31(val, _values)
                           {:read => val[2], :write => val[6]}
                     
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 90)
-  def _reduce_30(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 98)
+  def _reduce_32(val, _values)
                           {:read => val[6], :write => val[2]}
                     
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 95)
-  def _reduce_31(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 103)
+  def _reduce_33(val, _values)
                                 [val[0]]
                           
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 99)
-  def _reduce_32(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 107)
+  def _reduce_34(val, _values)
                                 val[0] + [val[2]]
                           
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 104)
-  def _reduce_33(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 112)
+  def _reduce_35(val, _values)
                            {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
                      
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 109)
-  def _reduce_34(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 117)
+  def _reduce_36(val, _values)
                                 {:type => 'ALL'}
                           
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 113)
-  def _reduce_35(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 121)
+  def _reduce_37(val, _values)
                                 {:type => 'KEYS_ONLY'}
                           
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 117)
-  def _reduce_36(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 125)
+  def _reduce_38(val, _values)
                                 {:type => 'INCLUDE', :attrs => val[2]}
                           
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 122)
-  def _reduce_37(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 130)
+  def _reduce_39(val, _values)
                                    [val[0]]
                              
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 126)
-  def _reduce_38(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 134)
+  def _reduce_40(val, _values)
                                    val[0] + [val[2]]
                              
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 131)
-  def _reduce_39(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 139)
+  def _reduce_41(val, _values)
                     struct(:DROP, :table => val[2])
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 136)
-  def _reduce_40(val, _values)
-                        struct(:DESCRIBE, :table => val[1])
-                  
-  end
-.,.,
-
-module_eval(<<'.,.,', 'ddb-parser.y', 140)
-  def _reduce_41(val, _values)
-                        struct(:DESCRIBE, :table => val[1])
-                  
-  end
-.,.,
-
-module_eval(<<'.,.,', 'ddb-parser.y', 145)
+module_eval(<<'.,.,', 'ddb-parser.y', 144)
   def _reduce_42(val, _values)
+                        struct(:DESCRIBE, :table => val[1])
+                  
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 148)
+  def _reduce_43(val, _values)
+                        struct(:DESCRIBE, :table => val[1])
+                  
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 153)
+  def _reduce_44(val, _values)
                       struct(:SELECT, :attrs => val[1], :table => val[3], :index => val[4], :conds => val[5], :order_asc => val[6], :limit => val[7], :count => false)
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 149)
-  def _reduce_43(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 157)
+  def _reduce_45(val, _values)
                       struct(:SELECT, :attrs => [], :table => val[6], :index => val[7], :conds => val[8], :order_asc => val[9], :limit => val[10], :count => true)
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 154)
-  def _reduce_44(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 162)
+  def _reduce_46(val, _values)
                     struct(:SCAN, :attrs => val[2], :table => val[4], :conds => val[5], :limit => val[6], :count => false)
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 158)
-  def _reduce_45(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 166)
+  def _reduce_47(val, _values)
                     struct(:SCAN, :attrs => [], :table => val[7], :conds => val[8], :limit => val[9], :count => true)
               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 163)
-  def _reduce_46(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 171)
+  def _reduce_48(val, _values)
                    struct(:GET, :attrs => val[1], :table => val[3], :conds => val[4])
              
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 168)
-  def _reduce_47(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 176)
+  def _reduce_49(val, _values)
                       []
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 172)
-  def _reduce_48(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 180)
+  def _reduce_50(val, _values)
                       val[0]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 177)
-  def _reduce_49(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 185)
+  def _reduce_51(val, _values)
                      [val[0]]
                
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 181)
-  def _reduce_50(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 189)
+  def _reduce_52(val, _values)
                      val[0] + [val[2]]
                
   end
 .,.,
 
-# reduce 51 omitted
+# reduce 53 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 187)
-  def _reduce_52(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 195)
+  def _reduce_54(val, _values)
                            val[3]
                      
   end
 .,.,
 
-# reduce 53 omitted
+# reduce 55 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 193)
-  def _reduce_54(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 201)
+  def _reduce_56(val, _values)
                               val[1]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 198)
-  def _reduce_55(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 206)
+  def _reduce_57(val, _values)
                            [val[0]]
                      
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 202)
-  def _reduce_56(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 210)
+  def _reduce_58(val, _values)
                              val[0] + [val[2]]
                        
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 207)
-  def _reduce_57(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 215)
+  def _reduce_59(val, _values)
                       [val[0], val[1].to_s.upcase.to_sym, [val[2]]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 211)
-  def _reduce_58(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 219)
+  def _reduce_60(val, _values)
                       [val[0], val[1].to_s.upcase.to_sym, [val[2], val[4]]]
                 
   end
 .,.,
 
-# reduce 59 omitted
-
-module_eval(<<'.,.,', 'ddb-parser.y', 218)
-  def _reduce_60(val, _values)
-                          :EQ
-                    
-  end
-.,.,
-
-module_eval(<<'.,.,', 'ddb-parser.y', 222)
-  def _reduce_61(val, _values)
-                          :LE
-                    
-  end
-.,.,
+# reduce 61 omitted
 
 module_eval(<<'.,.,', 'ddb-parser.y', 226)
   def _reduce_62(val, _values)
-                          :LT
+                          :EQ
                     
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 230)
   def _reduce_63(val, _values)
-                          :GE
+                          :LE
                     
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 234)
   def _reduce_64(val, _values)
+                          :LT
+                    
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 238)
+  def _reduce_65(val, _values)
+                          :GE
+                    
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 242)
+  def _reduce_66(val, _values)
                           :GT
                     
   end
 .,.,
 
-# reduce 65 omitted
+# reduce 67 omitted
 
-# reduce 66 omitted
+# reduce 68 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 241)
-  def _reduce_67(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 249)
+  def _reduce_69(val, _values)
                             val[1]
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 246)
-  def _reduce_68(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 254)
+  def _reduce_70(val, _values)
                          [val[0]]
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 250)
-  def _reduce_69(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 258)
+  def _reduce_71(val, _values)
                          val[0] + [val[2]]
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 255)
-  def _reduce_70(val, _values)
-                    [val[0], val[1].to_s.upcase.to_sym, [val[2]]]
-              
-  end
-.,.,
-
-module_eval(<<'.,.,', 'ddb-parser.y', 259)
-  def _reduce_71(val, _values)
-                    [val[0], val[1].to_s.upcase.to_sym, val[2]]
-              
-  end
-.,.,
-
 module_eval(<<'.,.,', 'ddb-parser.y', 263)
   def _reduce_72(val, _values)
-                    [val[0], val[1].to_s.upcase.to_sym, [val[2], val[4]]]
+                    [val[0], val[1].to_s.upcase.to_sym, [val[2]]]
               
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 267)
   def _reduce_73(val, _values)
+                    [val[0], val[1].to_s.upcase.to_sym, val[2]]
+              
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 271)
+  def _reduce_74(val, _values)
+                    [val[0], val[1].to_s.upcase.to_sym, [val[2], val[4]]]
+              
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 275)
+  def _reduce_75(val, _values)
                     [val[0], val[2].to_s.upcase.to_sym, []]
               
   end
 .,.,
 
-# reduce 74 omitted
+# reduce 76 omitted
 
-# reduce 75 omitted
+# reduce 77 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 273)
-  def _reduce_76(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 281)
+  def _reduce_78(val, _values)
                       :NE
                 
   end
 .,.,
 
-# reduce 77 omitted
+# reduce 79 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 279)
-  def _reduce_78(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 287)
+  def _reduce_80(val, _values)
                             :NOT_CONTAINS
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 283)
-  def _reduce_79(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 291)
+  def _reduce_81(val, _values)
                         :NULL
                   
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 287)
-  def _reduce_80(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 295)
+  def _reduce_82(val, _values)
                         :NOT_NULL
                   
   end
 .,.,
 
-# reduce 81 omitted
+# reduce 83 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 293)
-  def _reduce_82(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 301)
+  def _reduce_84(val, _values)
                        true
                  
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 297)
-  def _reduce_83(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 305)
+  def _reduce_85(val, _values)
                        false
                  
   end
 .,.,
 
-# reduce 84 omitted
+# reduce 86 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 303)
-  def _reduce_85(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 311)
+  def _reduce_87(val, _values)
                        val[1]
                  
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 308)
-  def _reduce_86(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 316)
+  def _reduce_88(val, _values)
                       struct(:UPDATE, :table => val[1], :action => val[2], :attrs => val[3], :conds => val[4])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 312)
-  def _reduce_87(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 320)
+  def _reduce_89(val, _values)
                       struct(:UPDATE_ALL, :table => val[2], :action => val[3], :attrs => val[4], :conds => val[5], :limit => val[6])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 317)
-  def _reduce_88(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 325)
+  def _reduce_90(val, _values)
                      :PUT
                
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 321)
-  def _reduce_89(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 329)
+  def _reduce_91(val, _values)
                      :ADD
                
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 326)
-  def _reduce_90(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 334)
+  def _reduce_92(val, _values)
                               [val[0]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 330)
-  def _reduce_91(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 338)
+  def _reduce_93(val, _values)
                               val[0] + [val[2]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 335)
-  def _reduce_92(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 343)
+  def _reduce_94(val, _values)
                          [val[0], val[2]]
                    
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 340)
-  def _reduce_93(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 348)
+  def _reduce_95(val, _values)
                               val[1]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 345)
-  def _reduce_94(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 353)
+  def _reduce_96(val, _values)
                            [val[0]]
                      
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 349)
-  def _reduce_95(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 357)
+  def _reduce_97(val, _values)
                            val[0] + [val[2]]
                      
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 354)
-  def _reduce_96(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 362)
+  def _reduce_98(val, _values)
                       [val[0], val[2]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 359)
-  def _reduce_97(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 367)
+  def _reduce_99(val, _values)
                       struct(:DELETE, :table => val[2], :conds => val[3])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 363)
-  def _reduce_98(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 371)
+  def _reduce_100(val, _values)
                       struct(:DELETE_ALL, :table => val[3], :conds => val[4], :limit => val[5])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 368)
-  def _reduce_99(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 376)
+  def _reduce_101(val, _values)
                       struct(:INSERT, :table => val[2], :attrs => val[4], :values => val[7])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 373)
-  def _reduce_100(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 381)
+  def _reduce_102(val, _values)
                               [val[0]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 377)
-  def _reduce_101(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 385)
+  def _reduce_103(val, _values)
                               val[0] + [val[2]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 382)
-  def _reduce_102(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 390)
+  def _reduce_104(val, _values)
                               [val[1]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 386)
-  def _reduce_103(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 394)
+  def _reduce_105(val, _values)
                               val[0] + [val[3]]
                         
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 391)
-  def _reduce_104(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 399)
+  def _reduce_106(val, _values)
                             [val[0]]
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 395)
-  def _reduce_105(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 403)
+  def _reduce_107(val, _values)
                             val[0] + [val[2]]
                       
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 400)
-  def _reduce_106(val, _values)
+module_eval(<<'.,.,', 'ddb-parser.y', 408)
+  def _reduce_108(val, _values)
                     struct(:NEXT)
               
   end
 .,.,
-
-# reduce 107 omitted
-
-# reduce 108 omitted
 
 # reduce 109 omitted
 
@@ -1310,19 +1326,9 @@ module_eval(<<'.,.,', 'ddb-parser.y', 400)
 
 # reduce 113 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 414)
-  def _reduce_114(val, _values)
-                     val[1]
-               
-  end
-.,.,
+# reduce 114 omitted
 
-module_eval(<<'.,.,', 'ddb-parser.y', 418)
-  def _reduce_115(val, _values)
-                     val[1]
-               
-  end
-.,.,
+# reduce 115 omitted
 
 module_eval(<<'.,.,', 'ddb-parser.y', 422)
   def _reduce_116(val, _values)
@@ -1331,43 +1337,57 @@ module_eval(<<'.,.,', 'ddb-parser.y', 422)
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 427)
+module_eval(<<'.,.,', 'ddb-parser.y', 426)
   def _reduce_117(val, _values)
-                      [val[0]]
-                
+                     val[1]
+               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 431)
+module_eval(<<'.,.,', 'ddb-parser.y', 430)
   def _reduce_118(val, _values)
-                       val[0] + [val[2]]
-                
+                     val[1]
+               
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 436)
+module_eval(<<'.,.,', 'ddb-parser.y', 435)
   def _reduce_119(val, _values)
                       [val[0]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 440)
+module_eval(<<'.,.,', 'ddb-parser.y', 439)
   def _reduce_120(val, _values)
                        val[0] + [val[2]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 445)
+module_eval(<<'.,.,', 'ddb-parser.y', 444)
   def _reduce_121(val, _values)
                       [val[0]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'ddb-parser.y', 449)
+module_eval(<<'.,.,', 'ddb-parser.y', 448)
   def _reduce_122(val, _values)
+                       val[0] + [val[2]]
+                
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 453)
+  def _reduce_123(val, _values)
+                      [val[0]]
+                
+  end
+.,.,
+
+module_eval(<<'.,.,', 'ddb-parser.y', 457)
+  def _reduce_124(val, _values)
                        val[0] + [val[2]]
                 
   end
