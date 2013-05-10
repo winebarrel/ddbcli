@@ -116,6 +116,39 @@ module DynamoDB
       end
     end
 
+    def import(table, items)
+      n = 0
+
+      until (chunk = items.slice!(0, MAX_NUMBER_BATCH_PROCESS_ITEMS)).empty?
+        operations = []
+
+        req_hash = {
+          'RequestItems' => {
+            table => operations,
+          },
+        }
+
+        chunk.each do |item|
+          h = {}
+
+          operations << {
+            'PutRequest' => {
+              'Item' => h,
+            },
+          }
+
+          item.each do |name, val|
+            h[name] = convert_to_attribute_value(val)
+          end
+        end
+
+        batch_write_item(req_hash)
+        n += chunk.length
+      end
+
+      return n
+    end
+
     private
 
     def do_show_tables(parsed)
