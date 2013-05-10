@@ -26,6 +26,7 @@ https://bitbucket.org/winebarrel/ddbcli
       -r, --region=REGION_OR_ENDPOINT
       -e, --eval=COMMAND
       -t, --timeout=SECOND
+          --import=TABLE,JSON_FILE
           --consistent-read
           --retry=NUM
           --retry-interval=SECOND
