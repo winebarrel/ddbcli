@@ -309,61 +309,71 @@ module DynamoDB
     end
 
     def do_select(action, parsed, opts = {})
-      req_hash = {'TableName' => parsed.table}
-      req_hash['AttributesToGet'] = parsed.attrs unless parsed.attrs.empty?
-      req_hash['Limit'] = parsed.limit if parsed.limit
-      req_hash['ExclusiveStartKey'] = opts[:last_evaluated_key] if opts[:last_evaluated_key]
+      select_proc = lambda do |last_evaluated_key|
+        req_hash = {'TableName' => parsed.table}
+        req_hash['AttributesToGet'] = parsed.attrs unless parsed.attrs.empty?
+        req_hash['Limit'] = parsed.limit if parsed.limit
+        req_hash['ExclusiveStartKey'] = last_evaluated_key if last_evaluated_key
 
-      if action == 'Query'
-        req_hash['ConsistentRead'] = @consistent if @consistent
-        req_hash['IndexName'] = parsed.index if parsed.index
-        req_hash['ScanIndexForward'] = parsed.order_asc unless parsed.order_asc.nil?
-      end
-
-      # XXX: req_hash['ReturnConsumedCapacity'] = ...
-
-      if parsed.count
-        req_hash['Select'] = 'COUNT'
-      elsif not parsed.attrs.empty?
-        req_hash['Select'] = 'SPECIFIC_ATTRIBUTES'
-      end
-
-      # key conditions / scan filter
-      if parsed.conds
-        param_name = (action == 'Query') ? 'KeyConditions' : 'ScanFilter'
-        req_hash[param_name] = {}
-
-        parsed.conds.each do |key, operator, values|
-          h = req_hash[param_name][key] = {
-            'ComparisonOperator' => operator.to_s
-          }
-
-          h['AttributeValueList'] = values.map do |val|
-            convert_to_attribute_value(val)
-          end
-        end
-      end # key conditions / scan filter
-
-      res_data = nil
-
-      begin
-        res_data = @client.query(action, req_hash)
-      rescue DynamoDB::Error => e
-        if action == 'Query' and e.data['__type'] == 'com.amazon.coral.service#InternalFailure' and not (e.data['message'] || e.data['Message'])
-          table_info = (@client.query('DescribeTable', 'TableName' => parsed.table) || {}).fetch('Table', {}) rescue {}
-
-          unless table_info.fetch('KeySchema', []).any? {|i| i ||= {}; i['KeyType'] == 'RANGE' }
-            e.message << 'Query can be performed only on a table with a HASH,RANGE key schema'
-          end
+        if action == 'Query'
+          req_hash['ConsistentRead'] = @consistent if @consistent
+          req_hash['IndexName'] = parsed.index if parsed.index
+          req_hash['ScanIndexForward'] = parsed.order_asc unless parsed.order_asc.nil?
         end
 
-        raise e
+        # XXX: req_hash['ReturnConsumedCapacity'] = ...
+
+        if parsed.count
+          req_hash['Select'] = 'COUNT'
+        elsif not parsed.attrs.empty?
+          req_hash['Select'] = 'SPECIFIC_ATTRIBUTES'
+        end
+
+        # key conditions / scan filter
+        if parsed.conds
+          param_name = (action == 'Query') ? 'KeyConditions' : 'ScanFilter'
+          req_hash[param_name] = {}
+
+          parsed.conds.each do |key, operator, values|
+            h = req_hash[param_name][key] = {
+              'ComparisonOperator' => operator.to_s
+            }
+
+            h['AttributeValueList'] = values.map do |val|
+              convert_to_attribute_value(val)
+            end
+          end
+        end # key conditions / scan filter
+
+        rd = nil
+
+        begin
+          rd = @client.query(action, req_hash)
+        rescue DynamoDB::Error => e
+          if action == 'Query' and e.data['__type'] == 'com.amazon.coral.service#InternalFailure' and not (e.data['message'] || e.data['Message'])
+            table_info = (@client.query('DescribeTable', 'TableName' => parsed.table) || {}).fetch('Table', {}) rescue {}
+
+            unless table_info.fetch('KeySchema', []).any? {|i| i ||= {}; i['KeyType'] == 'RANGE' }
+              e.message << 'Query can be performed only on a table with a HASH,RANGE key schema'
+            end
+          end
+
+          raise e
+        end
+
+        rd
       end
 
+      res_data = select_proc.call(opts[:last_evaluated_key])
       retval = nil
 
       if parsed.count
         retval = res_data['Count']
+
+        while res_data['LastEvaluatedKey']
+          res_data = select_proc.call(res_data['LastEvaluatedKey'])
+          retval += res_data['Count']
+        end
       else
         retval = res_data['Items'].map {|i| convert_to_ruby_value(i) }
       end
