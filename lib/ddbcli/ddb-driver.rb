@@ -96,25 +96,25 @@ module DynamoDB
                  raise 'must not happen'
                end
 
-     begin
-       case script_type
-       when :ruby
-         retval = retval.data if retval.kind_of?(DynamoDB::Iteratorable)
-         retval.instance_eval(script)
-       when :shell
-         retval = retval.data if retval.kind_of?(DynamoDB::Iteratorable)
-         IO.popen(script, "r+") do |f|
-           f.puts(retval.kind_of?(Array) ? retval.map {|i| i.to_s }.join("\n") : retval.to_s)
-           f.close_write
-           f.read
-         end
-       else
-         retval
-       end
-     rescue Exception => e
-       raise DynamoDB::Error, e.message, e.backtrace
-     end
-   end
+      begin
+        case script_type
+        when :ruby
+          retval = retval.data if retval.kind_of?(DynamoDB::Iteratorable)
+          retval.instance_eval(script)
+        when :shell
+          retval = retval.data if retval.kind_of?(DynamoDB::Iteratorable)
+          IO.popen(script, "r+") do |f|
+            f.puts(retval.kind_of?(Array) ? retval.map {|i| i.to_s }.join("\n") : retval.to_s)
+            f.close_write
+            f.read
+          end
+        else
+          retval
+        end
+      rescue Exception => e
+        raise DynamoDB::Error, e.message, e.backtrace
+      end
+    end
 
     private
 
