@@ -63,6 +63,14 @@ rule
                 {
                   struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
                 }
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER
+                {
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil)
+                }
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_clause
+                {
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5])
+                }
 
   create_definition : IDENTIFIER attr_type_list HASH
                       {  
@@ -493,6 +501,7 @@ KEYWORDS = %w(
   IN
   IS
   KEYS_ONLY
+  LIKE
   LIMIT
   NEXT
   NOT

@@ -62,6 +62,8 @@ module DynamoDB
                  do_use(parsed)
                when :CREATE
                  do_create(parsed)
+               when :CREATE_LIKE
+                 do_create_like(parsed)
                when :DROP
                  do_drop(parsed)
                when :DESCRIBE
@@ -298,6 +300,42 @@ module DynamoDB
           req_hash['LocalSecondaryIndexes'] << local_secondary_index
         end
       end # local secondary index
+
+      @client.query('CreateTable', req_hash)
+      nil
+    end
+
+    def do_create_like(parsed)
+      table_info = @client.query('DescribeTable', 'TableName' => parsed.like)['Table']
+
+      req_hash = {
+        'TableName'            => parsed.table,
+        'AttributeDefinitions' => table_info['AttributeDefinitions'],
+        'KeySchema'            => table_info['KeySchema'],
+      }
+
+      local_secondary_indexes = (table_info['LocalSecondaryIndexes'] || [])
+
+      unless local_secondary_indexes.empty?
+        req_hash['LocalSecondaryIndexes'] = local_secondary_indexes.map do |lsi|
+          h = {}
+
+          %w(IndexName KeySchema Projection).each do |i|
+            h[i] = lsi[i]
+          end
+
+          h
+        end
+      end
+
+      if parsed.capacity
+        req_hash['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => parsed.capacity[:read],
+          'WriteCapacityUnits' => parsed.capacity[:write],
+        }
+      else
+        req_hash['ProvisionedThroughput'] = table_info['ProvisionedThroughput']
+      end
 
       @client.query('CreateTable', req_hash)
       nil
