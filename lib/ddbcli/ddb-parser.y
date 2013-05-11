@@ -523,7 +523,7 @@ KEYWORDS = %w(
   USE
 )
 
-KEYWORD_REGEXP = Regexp.compile("(?:#{KEYWORDS.join '|'})", Regexp::IGNORECASE)
+KEYWORD_REGEXP = Regexp.compile("(?:#{KEYWORDS.join '|'})\\b", Regexp::IGNORECASE)
 
 def initialize(obj)
   src = obj.is_a?(IO) ? obj.read : obj.to_s
