@@ -462,7 +462,7 @@ module DynamoDB
       else
         retval = block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
 
-        if @iteratable and not parsed.limit
+        if (@iteratable or opts[:iteratable]) and not parsed.limit
           while res_data['LastEvaluatedKey']
             res_data = select_proc.call(res_data['LastEvaluatedKey'])
             retval.concat(
@@ -743,8 +743,29 @@ module DynamoDB
     end
 
     def do_insert_select(action, parsed)
-      p action
-      p parsed
+      items = do_select0(action, parsed.select, :iteratable => true)
+      n = 0
+
+      until (chunk = items.slice!(0, MAX_NUMBER_BATCH_PROCESS_ITEMS)).empty?
+        operations = []
+
+        req_hash = {
+          'RequestItems' => {
+            parsed.table => operations,
+          },
+        }
+
+        chunk.each do |item|
+          operations << {
+            'PutRequest' => {'Item' => item}
+          }
+        end
+
+        batch_write_item(req_hash)
+        n += chunk.length
+      end
+
+      Rownum.new(n)
     end
 
     def str_to_num(str)
