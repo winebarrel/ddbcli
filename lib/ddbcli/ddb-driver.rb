@@ -158,10 +158,14 @@ module DynamoDB
     private
 
     def do_show_tables(parsed)
+      do_show_tables0(parsed.limit)
+    end
+
+    def do_show_tables0(limit = nil)
       req_hash = {}
       table_names = []
 
-      req_hash['Limit'] = parsed.limit if parsed.limit
+      req_hash['Limit'] = limit if limit
 
       list = lambda do |last_evaluated_table_name|
         req_hash['ExclusiveStartTableName'] = last_evaluated_table_name if last_evaluated_table_name
@@ -175,7 +179,7 @@ module DynamoDB
       loop do
         letn = list.call(letn)
 
-        if parsed.limit or not letn
+        if limit or not letn
           break
         end
       end
@@ -184,7 +188,15 @@ module DynamoDB
     end
 
     def do_show_table_status(parsed)
-      p parsed
+      table_names = do_show_tables0
+      h = {}
+
+      table_names.map do |table_name|
+        table_info = @client.query('DescribeTable', 'TableName' => table_name)['Table']
+        h[table_name] = table_info['TableStatus']
+      end
+
+      return h
     end
 
     def do_show_regions(parsed)
