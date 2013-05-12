@@ -84,6 +84,10 @@ module DynamoDB
                  do_delete_all(parsed)
                when :INSERT
                  do_insert(parsed)
+               when :INSERT_SELECT
+                 do_insert_select('Query', parsed)
+               when :INSERT_SCAN
+                 do_insert_select('Scan', parsed)
                when :NEXT
                  if @last_action and @last_parsed and @last_evaluated_key
                    do_select(@last_action, @last_parsed, :last_evaluated_key => @last_evaluated_key)
@@ -384,6 +388,12 @@ module DynamoDB
     end
 
     def do_select(action, parsed, opts = {})
+      do_select0(action, parsed, opts) do |i|
+        convert_to_ruby_value(i)
+      end
+    end
+
+    def do_select0(action, parsed, opts = {})
       select_proc = lambda do |last_evaluated_key|
         req_hash = {'TableName' => parsed.table}
         req_hash['AttributesToGet'] = parsed.attrs unless parsed.attrs.empty?
@@ -450,12 +460,14 @@ module DynamoDB
           retval += res_data['Count']
         end
       else
-        retval = res_data['Items'].map {|i| convert_to_ruby_value(i) }
+        retval = block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
 
         if @iteratable and not parsed.limit
           while res_data['LastEvaluatedKey']
             res_data = select_proc.call(res_data['LastEvaluatedKey'])
-            retval.concat(res_data['Items'].map {|i| convert_to_ruby_value(i) })
+            retval.concat(
+              block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
+            )
           end
         end
       end
@@ -728,6 +740,11 @@ module DynamoDB
       end
 
       Rownum.new(n)
+    end
+
+    def do_insert_select(action, parsed)
+      p action
+      p parsed
     end
 
     def str_to_num(str)

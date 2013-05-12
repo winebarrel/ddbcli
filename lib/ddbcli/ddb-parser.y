@@ -384,6 +384,14 @@ rule
                 {
                   struct(:INSERT, :table => val[2], :attrs => val[4], :values => val[7])
                 }
+              | INSERT INTO IDENTIFIER select_stmt
+                {
+                  struct(:INSERT_SELECT, :table => val[2], :select => val[3])
+                }
+              | INSERT INTO IDENTIFIER scan_stmt
+                {
+                  struct(:INSERT_SCAN, :table => val[2], :select => val[3])
+                }
 
   attr_to_insert_list : IDENTIFIER
                         {
