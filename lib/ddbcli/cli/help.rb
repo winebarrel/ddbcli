@@ -110,7 +110,7 @@ Shell
 ##### Command #####
 
 .help                           displays this message
-.quit | .exit                   exits sdbcli
+.quit | .exit                   exits ddbcli
 .consistent      (true|false)?  displays ConsistentRead parameter or changes it
 .iteratable      (true|false)?  displays iteratable option or changes it
                                 all results are displayed if true
