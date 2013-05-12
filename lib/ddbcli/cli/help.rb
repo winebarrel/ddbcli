@@ -5,6 +5,9 @@ def print_help
 SHOW TABLES
   displays a table list
 
+SHOW TABLE STATUS
+  displays table statues
+
 SHOW REGIONS
   displays a region list
 
