@@ -40,6 +40,10 @@ rule
               {
                 struct(:SHOW_TABLES, :limit => val[2])
               }
+  show_stmt : SHOW TABLE STATUS
+              {
+                struct(:SHOW_TABLE_STATUS, :limit => val[2])
+              }
             | SHOW REGIONS
               {
                 struct(:SHOW_REGIONS)
@@ -521,6 +525,7 @@ KEYWORDS = %w(
   SELECT
   SET
   SHOW
+  STATUS
   STRING
   TABLES
   TABLE

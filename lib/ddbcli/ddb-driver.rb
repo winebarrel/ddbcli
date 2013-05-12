@@ -52,6 +52,8 @@ module DynamoDB
       retval = case command
                when :SHOW_TABLES
                  do_show_tables(parsed)
+               when :SHOW_TABLE_STATUS
+                 do_show_table_status(parsed)
                when :SHOW_REGIONS
                  do_show_regions(parsed)
                when :SHOW_CREATE_TABLE
@@ -179,6 +181,10 @@ module DynamoDB
       end
 
       return table_names
+    end
+
+    def do_show_table_status(parsed)
+      p parsed
     end
 
     def do_show_regions(parsed)
