@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
-Version = '0.1.5'
+Version = '0.1.6'
 
 HISTORY_FILE = File.join((ENV['HOME'] || ENV['USERPROFILE'] || '.'), '.ddbcli_history')
 HISTSIZE = 500

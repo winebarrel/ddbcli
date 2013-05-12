@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name              = 'ddbcli'
-  spec.version           = '0.1.5'
+  spec.version           = '0.1.6'
   spec.summary           = 'ddbcli is an interactive command-line client of Amazon DynamoDB.'
   spec.require_paths     = %w(lib)
   spec.files             = %w(README) + Dir.glob('bin/**/*') + Dir.glob('lib/**/*')
