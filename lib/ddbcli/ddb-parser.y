@@ -44,10 +44,6 @@ rule
               {
                 struct(:SHOW_TABLE_STATUS)
               }
-            | SHOW TABLE COUNT
-              {
-                struct(:SHOW_TABLE_COUNT)
-              }
             | SHOW REGIONS
               {
                 struct(:SHOW_REGIONS)

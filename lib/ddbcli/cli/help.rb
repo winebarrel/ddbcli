@@ -8,9 +8,6 @@ SHOW TABLES
 SHOW TABLE STATUS
   displays table statues
 
-SHOW TABLE COUNT
-  displays table record counts
-
 SHOW REGIONS
   displays a region list
 
