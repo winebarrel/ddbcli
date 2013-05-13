@@ -479,16 +479,26 @@ module DynamoDB
         end
       else
         retval = block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
+        limit_orig = parsed.limit
 
-        if (@iteratable or opts[:iteratable]) and not parsed.limit
+        if @iteratable or opts[:iteratable] or (parsed.limit and retval.length < parsed.limit)
+          parsed.limit -= retval.length if parsed.limit
+
           while res_data['LastEvaluatedKey']
             res_data = select_proc.call(res_data['LastEvaluatedKey'])
-            retval.concat(
-              block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
-            )
+            items = block_given? ? res_data['Items'].map {|i| yield(i) } : res_data['Items']
+
+            retval.concat(items)
+
+            if parsed.limit
+              parsed.limit -= items.length
+              break if parsed.limit < 1
+            end
           end
         end
       end
+
+      parsed.limit = limit_orig;
 
       if res_data['LastEvaluatedKey']
         @last_action = action
@@ -667,7 +677,9 @@ module DynamoDB
         end # scan filter
 
         res_data = @client.query('Scan', req_hash)
-        items.concat(res_data['Items'])
+        res_data_items = res_data['Items']
+        parsed.limit -= res_data_items.length
+        items.concat(res_data_items)
         res_data['LastEvaluatedKey']
       end
 
@@ -676,7 +688,7 @@ module DynamoDB
       loop do
         lek = scan.call(lek)
 
-        if parsed.limit or not lek
+        if not lek or (parsed.limit and parsed.limit < 1)
           break
         end
       end
