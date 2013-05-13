@@ -681,7 +681,7 @@ module DynamoDB
 
         res_data = @client.query('Scan', req_hash)
         res_data_items = res_data['Items']
-        parsed.limit -= res_data_items.length
+        parsed.limit -= res_data_items.length if parsed.limit
         items.concat(res_data_items)
         res_data['LastEvaluatedKey']
       end
