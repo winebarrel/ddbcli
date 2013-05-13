@@ -187,6 +187,21 @@ module DynamoDB
       return table_names
     end
 
+    def do_show_table_status(parsed)
+      table_names = do_show_tables0
+      h = {}
+
+      table_names.map do |table_name|
+        table_info = @client.query('DescribeTable', 'TableName' => table_name)['Table']
+        h[table_name] = {
+          'TableStatus' => table_info['TableStatus'],
+          'ItemCount'   => table_info['ItemCount'],
+        }
+      end
+
+      return h
+    end
+
     def do_show_regions(parsed)
       DynamoDB::Endpoint.regions
     end
