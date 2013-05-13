@@ -193,10 +193,11 @@ module DynamoDB
 
       table_names.map do |table_name|
         table_info = @client.query('DescribeTable', 'TableName' => table_name)['Table']
-        h[table_name] = {
-          'TableStatus' => table_info['TableStatus'],
-          'ItemCount'   => table_info['ItemCount'],
-        }
+        h[table_name] = {}
+
+        %w(TableStatus ItemCount TableSizeBytes).each do |i|
+          h[table_name][i] = table_info[i]
+        end
       end
 
       return h
