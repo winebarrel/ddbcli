@@ -779,7 +779,7 @@ module DynamoDB
     end
 
     def do_insert_select(action, parsed)
-      if parsed.count
+      if parsed.select.count
         raise DynamoDB::Error, '"COUNT(*)" cannot be inserted.'
       end
 
