@@ -1,5 +1,7 @@
+require 'tempfile'
+
 def print_help
-  puts <<'EOS'
+  doc =<<EOS
 ##### Query #####
 
 SHOW TABLES
@@ -126,4 +128,13 @@ Shell
 .version                        displays a version
 
 EOS
+
+  Tempfile.open("ddbcli.#{$$}.#{Time.now.to_i}") do |f|
+    f.puts(doc)
+    f.flush
+
+    unless system("less #{f.path}")
+      puts doc
+    end
+  end
 end
