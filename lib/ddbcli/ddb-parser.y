@@ -40,9 +40,13 @@ rule
               {
                 struct(:SHOW_TABLES, :limit => val[2])
               }
-  show_stmt : SHOW TABLE STATUS
+            | SHOW TABLE STATUS
               {
-                struct(:SHOW_TABLE_STATUS, :limit => val[2])
+                struct(:SHOW_TABLE_STATUS)
+              }
+            | SHOW TABLE COUNT
+              {
+                struct(:SHOW_TABLE_COUNT)
               }
             | SHOW REGIONS
               {
