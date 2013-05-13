@@ -45,6 +45,9 @@ https://bitbucket.org/winebarrel/ddbcli
   SHOW TABLE STATUS
     displays table statues
   
+  SHOW TABLE COUNT
+    displays table record counts
+  
   SHOW REGIONS
     displays a region list
   
