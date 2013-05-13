@@ -46,8 +46,13 @@ def print_json(data, opts = {})
 
   str.sub!(/(?:\r\n|\r|\n)*\Z/, "\n")
 
-  if opts[:show_rows] and data.kind_of?(Array)
-    str << "// #{data.length} #{data.length > 1 ? 'rows' : 'row'} in set"
+  if opts[:show_rows]
+    if data.kind_of?(Array)
+      str << "// #{data.length} #{data.length > 1 ? 'rows' : 'row'} in set"
+    else
+      str << '// 1 row in set'
+    end
+
     str << " (%.2f sec)" % opts[:time] if opts[:time]
     str << "\n"
   end
