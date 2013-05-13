@@ -778,12 +778,12 @@ module DynamoDB
     end
 
     def do_insert_select(action, parsed)
-      items = do_select0(action, parsed.select, :iteratable => true)
-      items = items.data if items.kind_of?(Iteratorable)
-
-      unless items.kind_of?(Array)
+      if parsed.count
         raise DynamoDB::Error, '"COUNT(*)" cannot be inserted.'
       end
+
+      items = do_select0(action, parsed.select, :iteratable => true)
+      items = items.data if items.kind_of?(Iteratorable)
 
       n = 0
 
