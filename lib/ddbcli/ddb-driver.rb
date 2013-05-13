@@ -675,7 +675,10 @@ module DynamoDB
 
       loop do
         lek = scan.call(lek)
-        break unless lek
+
+        if parsed.limit or not lek
+          break
+        end
       end
 
       return items
@@ -762,6 +765,12 @@ module DynamoDB
 
     def do_insert_select(action, parsed)
       items = do_select0(action, parsed.select, :iteratable => true)
+      items = items.data if items.kind_of?(Iteratorable)
+
+      unless items.kind_of?(Array)
+        raise DynamoDB::Error, '"COUNT(*)" cannot be inserted.'
+      end
+
       n = 0
 
       until (chunk = items.slice!(0, MAX_NUMBER_BATCH_PROCESS_ITEMS)).empty?
