@@ -47,7 +47,7 @@ def print_json(data, opts = {})
   str.sub!(/(?:\r\n|\r|\n)*\Z/, "\n")
 
   if opts[:show_rows]
-    if data.kind_of?(Array)
+   if [Array, Hash].any? {|i| data.kind_of?(i) }
       str << "// #{data.length} #{data.length > 1 ? 'rows' : 'row'} in set"
     else
       str << '// 1 row in set'
