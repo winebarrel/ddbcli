@@ -88,7 +88,7 @@ Query (SELECT)
   see http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-KeyConditions
 
 Scan (SELECT ALL)
-  = | <> | != | <= | < | >= | > | NOT NULL | NULL | CONTAINS | NOT CONTAINS | BEGINS_WITH | IN | BETWEEN
+  = | <> | != | <= | < | >= | > | IS NOT NULL | IS NULL | CONTAINS | NOT CONTAINS | BEGINS_WITH | IN | BETWEEN
   see http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ScanFilter
 
 
