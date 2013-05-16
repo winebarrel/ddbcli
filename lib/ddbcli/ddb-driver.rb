@@ -422,10 +422,14 @@ module DynamoDB
         req_hash['Limit'] = parsed.limit if parsed.limit
         req_hash['ExclusiveStartKey'] = last_evaluated_key if last_evaluated_key
 
-        if action == 'Query'
+        case action
+        when 'Query'
           req_hash['ConsistentRead'] = @consistent if @consistent
           req_hash['IndexName'] = parsed.index if parsed.index
           req_hash['ScanIndexForward'] = parsed.order_asc unless parsed.order_asc.nil?
+        when 'Scan'
+          req_hash['Segment'] = parsed.segment if parsed.segment
+          req_hash['TotalSegments'] = parsed.total_segments if parsed.total_segments
         end
 
         # XXX: req_hash['ReturnConsumedCapacity'] = ...

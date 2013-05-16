@@ -172,11 +172,15 @@ rule
 
   scan_stmt : SELECT ALL attrs_to_get FROM IDENTIFIER scan_where_clause limit_clause
               {
-                struct(:SCAN, :attrs => val[2], :table => val[4], :conds => val[5], :limit => val[6], :count => false)
+                struct(:SCAN, :attrs => val[2], :table => val[4], :conds => val[5], :limit => val[6], :count => false, :segment => nil, :total_segments => nil)
               }
             | SELECT ALL COUNT '(' '*' ')' FROM IDENTIFIER scan_where_clause limit_clause
               {
-                struct(:SCAN, :attrs => [], :table => val[7], :conds => val[8], :limit => val[9], :count => true)
+                struct(:SCAN, :attrs => [], :table => val[7], :conds => val[8], :limit => val[9], :count => true, :segment => nil, :total_segments => nil)
+              }
+            | SELECT NUMBER_VALUE '/' NUMBER_VALUE attrs_to_get FROM IDENTIFIER scan_where_clause limit_clause
+              {
+                struct(:SCAN, :attrs => val[4], :table => val[6], :conds => val[7], :limit => val[8], :count => false, :segment => val[1], :total_segments => val[3])
               }
 
   get_stmt : GET attrs_to_get FROM IDENTIFIER update_where_clause
@@ -598,7 +602,7 @@ def scan
       yield [:STRING_VALUE, tok.slice(1...-1).gsub(/""/, '"')]
     elsif (tok = @ss.scan /\d+(?:\.\d+)?/)
       yield [:NUMBER_VALUE, (tok =~ /\./ ? tok.to_f : tok.to_i)]
-    elsif (tok = @ss.scan /[,\(\)\*]/)
+    elsif (tok = @ss.scan /[,\(\)\*\/]/)
       yield [tok, tok]
     elsif (tok = @ss.scan /\|(?:.*)/)
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]
