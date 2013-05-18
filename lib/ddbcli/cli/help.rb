@@ -50,9 +50,9 @@ DELETE FROM table_name WHERE key1 = '...' AND ..
 DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
   deletes items
 
-SELECT {*|attrs|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
-SELECT ALL {*|attrs|COUNT(*)}  FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
-SELECT segment/total_segments {*|attrs|COUNT(*)}  FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
+SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
+SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
+SELECT segment/total_segments {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
   queries using the Query/Scan action
   see http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/QueryAndScan.html
 
