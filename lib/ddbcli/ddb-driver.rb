@@ -198,6 +198,12 @@ module DynamoDB
         %w(TableStatus ItemCount TableSizeBytes).each do |i|
           h[table_name][i] = table_info[i]
         end
+
+        provisioned_throughput = table_info['ProvisionedThroughput']
+
+        %w(ReadCapacityUnits WriteCapacityUnits).each do |i|
+          h[table_name][i] = provisioned_throughput[i]
+        end
       end
 
       return h
