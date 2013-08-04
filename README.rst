@@ -40,6 +40,11 @@ Install
       ...
   shell> ddbcli # show prompt
 
+Demo
+----
+
+.. image:: https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif
+
 Help
 ----
 ::
