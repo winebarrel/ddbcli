@@ -1,5 +1,6 @@
 require 'optparse'
 require 'ostruct'
+require 'uri'
 
 def parse_options
   options = OpenStruct.new
@@ -20,6 +21,15 @@ def parse_options
     opt.on('-k', '--access-key=ACCESS_KEY')          {|v| options.access_key_id          = v      }
     opt.on('-s', '--secret-key=SECRET_KEY')          {|v| options.secret_access_key      = v      }
     opt.on('-r', '--region=REGION_OR_ENDPOINT')      {|v| options.ddb_endpoint_or_region = v      }
+
+    opt.on('',   '--uri=URI') {|v|
+      value = v
+      value = "http://#{value}" unless value =~ %r|\A\w+://|
+      uri = URI.parse(value)
+      raise URI::InvalidURIError, "invalid shceme: #{v}" unless /\Ahttps?\Z/ =~ uri.scheme
+      options.ddb_endpoint_or_region = uri
+    }
+
     opt.on('-e', '--eval=COMMAND')                   {|v| options.command                = v      }
     opt.on('-t', '--timeout=SECOND', Integer)        {|v| options.timeout                = v.to_i }
 

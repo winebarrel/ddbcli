@@ -5,6 +5,7 @@ require 'time'
 require 'stringio'
 require 'zlib'
 require 'pp'
+require 'uri'
 
 require 'ddbcli/ddb-error'
 require 'ddbcli/ddb-endpoint'
@@ -18,7 +19,6 @@ module DynamoDB
 
     DEFAULT_TIMEOUT = 60
 
-    attr_reader :endpoint
     attr_reader :region
     attr_accessor :timeout
     attr_accessor :retry_num
@@ -36,7 +36,13 @@ module DynamoDB
     end
 
     def set_endpoint_and_region(endpoint_or_region)
-      @endpoint, @region = DynamoDB::Endpoint.endpoint_and_region(endpoint_or_region)
+      if endpoint_or_region.kind_of?(URI)
+        @endpoint = endpoint_or_region
+        @region = [@endpoint.host, @endpoint.port].join(':')
+      else
+        host, @region = DynamoDB::Endpoint.endpoint_and_region(endpoint_or_region)
+        @endpoint = URI.parse("https://#{host}")
+      end
     end
 
     def query(action, hash)
@@ -73,16 +79,20 @@ EOS
       headers['Authorization'] = authorization(date, headers, req_body)
 
       Net::HTTP.version_1_2
-      https = Net::HTTP.new(@endpoint, 443)
-      https.use_ssl = true
-      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      https.open_timeout = @timeout
-      https.read_timeout = @timeout
+      http = Net::HTTP.new(@endpoint.host, @endpoint.port)
+
+      if @endpoint.scheme == 'https'
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+
+      http.open_timeout = @timeout
+      http.read_timeout = @timeout
 
       res_code = nil
       res_msg  = nil
 
-      res_body = https.start do |w|
+      res_body = http.start do |w|
         req = Net::HTTP::Post.new('/', headers)
         req.body = req_body
         res = w.request(req)
