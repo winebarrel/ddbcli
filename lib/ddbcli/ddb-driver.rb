@@ -290,7 +290,18 @@ module DynamoDB
     end
 
     def do_use(parsed)
-      set_endpoint_and_region(parsed.endpoint_or_region)
+      eor = parsed.endpoint_or_region
+
+      if %r|\A\w+://| =~ eor or /:\d+\Z/ =~ eor
+        eor = "http://#{eor}" unless eor =~ %r|\A\w+://|
+        eor = URI.parse(eor)
+
+        unless /\Ahttps?\Z/ =~ eor.scheme
+          raise URI::InvalidURIError, "invalid shceme: #{parsed.endpoint_or_region}"
+        end
+      end
+
+      set_endpoint_and_region(eor)
       nil
     end
 

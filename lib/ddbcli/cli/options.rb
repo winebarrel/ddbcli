@@ -23,9 +23,9 @@ def parse_options
     opt.on('-r', '--region=REGION_OR_ENDPOINT')      {|v| options.ddb_endpoint_or_region = v      }
 
     opt.on('',   '--uri=URI') {|v|
-      value = v
-      value = "http://#{value}" unless value =~ %r|\A\w+://|
-      uri = URI.parse(value)
+      uri = v
+      uri = "http://#{uri}" unless uri =~ %r|\A\w+://|
+      uri = URI.parse(uri)
       raise URI::InvalidURIError, "invalid shceme: #{v}" unless /\Ahttps?\Z/ =~ uri.scheme
       options.ddb_endpoint_or_region = uri
     }
