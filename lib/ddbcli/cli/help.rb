@@ -1,6 +1,6 @@
 require 'tempfile'
 
-def print_help
+def print_help(options = {})
   doc =<<EOS
 ##### Query #####
 
@@ -130,12 +130,16 @@ Shell
 
 EOS
 
-  Tempfile.open("ddbcli.#{$$}.#{Time.now.to_i}") do |f|
-    f.puts(doc)
-    f.flush
+  if options[:pagerize]
+    Tempfile.open("ddbcli.#{$$}.#{Time.now.to_i}") do |f|
+      f.puts(doc)
+      f.flush
 
-    unless system("less #{f.path}")
-      puts doc
+      unless system("less #{f.path}")
+        puts doc
+      end
     end
+  else
+    puts doc
   end
 end

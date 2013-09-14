@@ -46,8 +46,6 @@ def parse_options
 
     opt.on('-h', '--help') {
       puts opt.help
-      puts
-      print_help
       exit
     }
 
