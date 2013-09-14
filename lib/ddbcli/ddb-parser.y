@@ -612,7 +612,7 @@ def scan
     elsif (tok = @ss.scan %r|[-.0-9a-z_:/]*|i)
       yield [:IDENTIFIER, tok]
     else
-      raise_error(@ss.rest, @prev_tokens)
+      raise_error(tok, @prev_tokens, @ss)
     end
 
     @prev_tokens << tok
@@ -622,13 +622,19 @@ def scan
 end
 private :scan
 
-def raise_error(error_value, prev_tokens)
+def raise_error(error_value, prev_tokens, scanner)
   errmsg = ["__#{error_value}__"]
 
   if prev_tokens and not prev_tokens.empty?
     toks = prev_tokens.reverse[0, 5].reverse
+    toks.unshift('...') if prev_tokens.length > toks.length
     errmsg.unshift(toks.join.strip) unless toks.empty?
-    errmsg.unshift('...') if prev_tokens.length > toks.length
+  end
+
+  if scanner and not (rest = (scanner.rest || '').strip).empty?
+    str = rest[0, 16]
+    str += '...' if rest.length > str.length
+    errmsg << str
   end
 
   raise Racc::ParseError, ('parse error on value: %s' % errmsg.join(' '))
@@ -640,7 +646,7 @@ def parse
 end
 
 def on_error(error_token_id, error_value, value_stack)
-  raise_error(error_value, @prev_tokens)
+  raise_error(error_value, @prev_tokens, @ss)
 end
 
 def self.parse(obj)
