@@ -567,6 +567,7 @@ private :struct
 
 def scan
   tok = nil
+  @prev_tokens = []
 
   until @ss.eos?
     if (tok = @ss.scan /\s+/)
@@ -611,16 +612,35 @@ def scan
     elsif (tok = @ss.scan %r|[-.0-9a-z_:/]*|i)
       yield [:IDENTIFIER, tok]
     else
-      raise Racc::ParseError, ('parse error on value "%s"' % @ss.rest.inspect)
+      raise_error(@ss.rest, @prev_tokens)
     end
+
+    @prev_tokens << tok
   end
 
-  yield [false, 'EOF']
+  yield [false, '']
 end
 private :scan
 
+def raise_error(error_value, prev_tokens)
+  errmsg = ["__#{error_value}__"]
+
+  if prev_tokens and not prev_tokens.empty?
+    toks = prev_tokens.reverse[0, 5].reverse
+    errmsg.unshift(toks.join.strip) unless toks.empty?
+    errmsg.unshift('...') if prev_tokens.length > toks.length
+  end
+
+  raise Racc::ParseError, ('parse error on value: %s' % errmsg.join(' '))
+end
+private :raise_error
+
 def parse
   yyparse self, :scan
+end
+
+def on_error(error_token_id, error_value, value_stack)
+  raise_error(error_value, @prev_tokens)
 end
 
 def self.parse(obj)
