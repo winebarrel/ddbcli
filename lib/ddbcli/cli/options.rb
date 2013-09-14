@@ -51,6 +51,12 @@ def parse_options
 
     opt.parse!
 
+    if options.ddb_endpoint_or_region.kind_of?(URI) and not (options.access_key_id and options.secret_access_key)
+      options.access_key_id = 'scott'
+      options.secret_access_key = 'tiger'
+      puts 'Warning: dummy auth key was set because ACCESS_KEY/SECRET_KEY is not set'
+    end
+
     unless options.access_key_id and options.secret_access_key and options.ddb_endpoint_or_region
       puts opt.help
       exit 1
