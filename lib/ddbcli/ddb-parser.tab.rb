@@ -133,7 +133,7 @@ def scan
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan /\!(?:.*)/)
       yield [:SHELL_SCRIPT, tok.slice(1..-1)]
-    elsif (tok = @ss.scan /[-.0-9a-z_]*/i)
+    elsif (tok = @ss.scan %r|[-.0-9a-z_:/]*|i)
       yield [:IDENTIFIER, tok]
     else
       raise Racc::ParseError, ('parse error on value "%s"' % @ss.rest.inspect)
