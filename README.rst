@@ -128,6 +128,9 @@ Help
   Identifier
     `ABCD...` or Non-keywords
   
+  Array
+    ('String', 'String', ...), (1, 2, 3, ...)
+  
   
   ##### Operator #####
   
