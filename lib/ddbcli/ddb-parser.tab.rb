@@ -153,7 +153,7 @@ def raise_error(error_value, prev_tokens, scanner)
   if prev_tokens and not prev_tokens.empty?
     toks = prev_tokens.reverse[0, 5].reverse
     toks.unshift('...') if prev_tokens.length > toks.length
-    errmsg.unshift(toks.join.strip) unless toks.empty?
+    errmsg.unshift(toks.join.strip)
   end
 
   if scanner and not (rest = (scanner.rest || '').strip).empty?
