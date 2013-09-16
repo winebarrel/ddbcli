@@ -13,6 +13,14 @@ rule
          {
            [val[0], :shell, val[1]]
          }
+       | query GT STRING_VALUE
+         {
+           [val[0], :overwrite, val[2]]
+         }
+       | query GTGT STRING_VALUE
+         {
+           [val[0], :append, val[2]]
+         }
        | RUBY_SCRIPT
          {
            [struct(:NULL), :ruby, val[0]]
@@ -572,8 +580,9 @@ def scan
   until @ss.eos?
     if (tok = @ss.scan /\s+/)
       # nothing to do
-    elsif (tok = @ss.scan /(?:<>|!=|>=|<=|>|<|=)/)
+    elsif (tok = @ss.scan /(?:>>|<>|!=|>=|<=|>|<|=)/)
       sym = {
+        '>>' => :GTGT,
         '<>' => :NE,
         '!=' => :NE,
         '>=' => :GE,
