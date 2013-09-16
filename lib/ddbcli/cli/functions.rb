@@ -17,7 +17,7 @@ def print_version
   puts "#{File.basename($0)} #{Version}"
 end
 
-def print_json(data, opts = {})
+def print_json(data, out, opts = {})
   str = nil
   last_evaluated_key = nil
 
@@ -62,7 +62,7 @@ def print_json(data, opts = {})
   end
 
   str << "\n"
-  puts str
+  out.puts(str)
 end
 
 def evaluate_command(driver, cmd_arg)

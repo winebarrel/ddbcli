@@ -30,7 +30,7 @@ def evaluate_query(driver, src, opts = {})
       end
 
       start_time = Time.new
-      out = driver.execute(query)
+      out = driver.execute(query, opts.merge(:inline => (tok != '\G')))
       elapsed = Time.now - start_time
 
       if out.kind_of?(DynamoDB::Driver::Rownum)
@@ -39,7 +39,7 @@ def evaluate_query(driver, src, opts = {})
         puts out
       elsif out
         opts = opts.merge(:inline => (tok != '\G'), :time => elapsed)
-        print_json(out, opts)
+        print_json(out, $stdout, opts)
       end
     elsif (tok = ss.scan /./)
       buf << tok # 落ち穂拾い

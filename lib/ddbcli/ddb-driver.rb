@@ -115,10 +115,10 @@ module DynamoDB
             f.read
           end
         when :overwrite
-          open(script, 'wb') {|f| f.puts(JSON.dump(retval)) }
+          open(script, 'wb') {|f| print_json(retval, f, opts) }
           retval = nil
         when :append
-          open(script, 'ab') {|f| f.puts(JSON.dump(retval)) }
+          open(script, 'ab') {|f| print_json(retval, f, opts) }
           retval = nil
         else
           retval
