@@ -117,7 +117,7 @@ Shell
       {"birth_date"=>"1964-04-30", "emp_no"=>225407,...
       ...
 
-##### Save #####
+##### Output to a file #####
 
 SELECT ALL * FROM employees > 'foo.json';
 SELECT ALL * FROM employees >> 'foo.json';

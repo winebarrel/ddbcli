@@ -165,7 +165,7 @@ Help
         ...
   
   
-  ##### Save #####
+  ##### Output to a file #####
   
   SELECT ALL * FROM employees > 'foo.json';
   SELECT ALL * FROM employees >> 'foo.json';
