@@ -119,8 +119,8 @@ Shell
 
 ##### Save #####
 
-SELECT ALL * FROM employees > 'foo.json'
-SELECT ALL * FROM employees >> 'foo.json'
+SELECT ALL * FROM employees > 'foo.json';
+SELECT ALL * FROM employees >> 'foo.json';
 
 
 ##### Command #####
