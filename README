@@ -35,6 +35,10 @@ https://bitbucket.org/winebarrel/ddbcli
       ...
   shell> ddbcli # show prompt
 
+== Use DynamoDB Local
+
+  ddbcli --uri localhost:8000
+
 == Help
 
   ##### Query #####

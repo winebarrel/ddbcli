@@ -45,6 +45,12 @@ Demo
 
 .. image:: https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif
 
+Use DynamoDB Local
+------------------
+::
+
+  ddbcli --uri localhost:8000
+
 Help
 ----
 ::
