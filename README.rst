@@ -173,8 +173,11 @@ Help
   
   ##### Output to a file #####
   
-  SELECT ALL * FROM employees > 'foo.json';
-  SELECT ALL * FROM employees >> 'foo.json';
+  Overwrite
+    SELECT ALL * FROM employees > 'foo.json';
+  
+  Append
+    SELECT ALL * FROM employees >> 'foo.json';
   
   
   ##### Command #####
