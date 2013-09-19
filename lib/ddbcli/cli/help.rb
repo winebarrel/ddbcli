@@ -4,10 +4,10 @@ def print_help(options = {})
   doc =<<EOS
 ##### Query #####
 
-SHOW TABLES
+SHOW TABLES [LIMIT num] [LIKE '...']
   displays a table list
 
-SHOW TABLE STATUS
+SHOW TABLE STATUS [LIKE '...']
   displays table statues
 
 SHOW REGIONS
