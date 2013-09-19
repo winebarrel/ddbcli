@@ -4,7 +4,6 @@ require 'net/http'
 require 'time'
 require 'stringio'
 require 'zlib'
-require 'pp'
 require 'uri'
 
 require 'ddbcli/ddb-error'
@@ -56,7 +55,7 @@ module DynamoDB
         $stderr.puts(<<EOS)
 ---request begin---
 Action: #{action}
-#{hash.pretty_inspect}
+#{JSON.pretty_generate(hash)}
 ---request end---
 EOS
       end
@@ -114,7 +113,7 @@ EOS
       if @debug
         $stderr.puts(<<EOS)
 ---response begin---
-#{res_data.pretty_inspect}
+#{JSON.pretty_generate(res_data)}
 ---response end---
 EOS
       end
