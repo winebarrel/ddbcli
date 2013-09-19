@@ -3,6 +3,7 @@ require 'ddbcli/ddb-parser.tab'
 require 'ddbcli/ddb-iteratorable'
 
 require 'forwardable'
+require 'strscan'
 
 module DynamoDB
   class Driver
@@ -164,10 +165,11 @@ module DynamoDB
     private
 
     def do_show_tables(parsed)
-      do_show_tables0(parsed.limit)
+      do_show_tables0(parsed.like, parsed.limit)
     end
 
-    def do_show_tables0(limit = nil)
+    def do_show_tables0(like, limit = nil)
+      like = like ? like_to_regexp(like) : nil
       req_hash = {}
       table_names = []
 
@@ -190,11 +192,11 @@ module DynamoDB
         end
       end
 
-      return table_names
+      return like ? table_names.select {|i| i =~ like } : table_names
     end
 
     def do_show_table_status(parsed)
-      table_names = do_show_tables0
+      table_names = do_show_tables0(parsed.like)
       h = {}
 
       table_names.map do |table_name|
@@ -849,6 +851,30 @@ module DynamoDB
         req_hash['RequestItems'] = res_data['UnprocessedItems']
         res_data = @client.query('BatchWriteItem', req_hash)
       end
+    end
+
+    def like_to_regexp(like)
+      ss = StringScanner.new(like)
+      tok = nil
+      regexp = ''
+
+      until ss.eos?
+        if (tok = ss.scan /\\\\/)
+          regexp << '\\'
+        elsif (tok = ss.scan /\\%/)
+          regexp << '%'
+        elsif (tok = ss.scan /\\_/)
+          regexp << '_'
+        elsif (tok = ss.scan /%/)
+          regexp << '.*'
+        elsif (tok = ss.scan /_/)
+          regexp << '.'
+        elsif (tok = ss.scan /[^\\%_]+/)
+          regexp << tok
+        end
+      end
+
+      Regexp.compile("\\A#{regexp}\\Z")
     end
 
   end # Driver

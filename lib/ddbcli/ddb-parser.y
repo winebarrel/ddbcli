@@ -44,13 +44,13 @@ rule
         | insert_stmt
         | next_stmt
 
-  show_stmt : SHOW TABLES limit_clause
+  show_stmt : SHOW TABLES limit_clause like_clause
               {
-                struct(:SHOW_TABLES, :limit => val[2])
+                struct(:SHOW_TABLES, :limit => val[2], :like => val[3])
               }
-            | SHOW TABLE STATUS
+            | SHOW TABLE STATUS like_clause
               {
-                struct(:SHOW_TABLE_STATUS)
+                struct(:SHOW_TABLE_STATUS, :like => val[3])
               }
             | SHOW REGIONS
               {
@@ -61,15 +61,21 @@ rule
                 struct(:SHOW_CREATE_TABLE, :table => val[3])
               }
 
+  like_clause :
+              | LIKE STRING_VALUE
+                {
+                  val[1]
+                }
+
   alter_stmt : ALTER TABLE IDENTIFIER capacity_clause
-              {
-                struct(:ALTER_TABLE, :table => val[2], :capacity => val[3])
-              }
+               {
+                 struct(:ALTER_TABLE, :table => val[2], :capacity => val[3])
+               }
 
   use_stmt : USE IDENTIFIER
-           {
-             struct(:USE, :endpoint_or_region => val[1])
-           }
+             {
+               struct(:USE, :endpoint_or_region => val[1])
+             }
 
   create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_clause
                 {
