@@ -74,7 +74,7 @@ def evaluate_command(driver, cmd_arg)
 
   commands = {
     'help' => lambda {
-      print_help
+      print_help(:pagerize => true)
     },
 
     ['exit', 'quit'] => lambda {
