@@ -9,7 +9,8 @@ def print_rownum(data, opts = {})
   rownum = data.to_i
   msg = "// #{rownum} #{rownum > 1 ? 'rows' : 'row'} changed"
   msg << " (%.2f sec)" % opts[:time] if opts[:time]
-  msg << "\n\n"
+  msg << "\n"
+  msg << "\n" unless opts[:strip]
   puts msg
 end
 
@@ -61,7 +62,7 @@ def print_json(data, out, opts = {})
     str << "// has more\n"
   end
 
-  str << "\n"
+  str << "\n" unless opts[:strip]
   out.puts(str)
 end
 

@@ -34,7 +34,7 @@ def evaluate_query(driver, src, opts = {})
       elapsed = Time.now - start_time
 
       if out.kind_of?(DynamoDB::Driver::Rownum)
-        print_rownum(out, :time => elapsed)
+        print_rownum(out, opts.merge(:time => elapsed))
       elsif out.kind_of?(String)
         puts out
       elsif out

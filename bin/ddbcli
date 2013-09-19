@@ -41,7 +41,7 @@ elsif not $stdin.tty? or options.command
   end
 
   begin
-    evaluate_query(driver, src)
+    evaluate_query(driver, src, :strip => true)
   rescue => e
     print_error(e.message)
     print_error(e.backtrace) if driver.debug
