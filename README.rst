@@ -75,7 +75,10 @@ Help
     [, INDEX index1_name (attr1 {STRING|NUMBER|BINARY}) {ALL|KEYS_ONLY|INCLUDE (attr, ...)}
      , INDEX index2_name (attr2 {STRING|NUMBER|BINARY}) {ALL|KEYS_ONLY|INCLUDE (attr, ...)}
      , ...]
-  ) READ = num, WRITE = num
+    [, GLOBAL INDEX index1_name (hash_attr1 {STRING|NUMBER|BINARY} [, range_attr1 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
+     , GLOBAL INDEX index2_name (hash_attr2 {STRING|NUMBER|BINARY} [, range_attr2 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
+     , ...]
+  ) READ = num WRITE = num
     creates a table
   
   CREATE TABLES table_name LIKE another_table_name [READ = num, WRITE = num]
