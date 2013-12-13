@@ -124,6 +124,16 @@ rule
                     {
                       {:read => val[6], :write => val[2]}
                     }
+                  | strict_capacity_clause
+
+  strict_capacity_clause : READ EQ NUMBER_VALUE WRITE EQ NUMBER_VALUE
+                           {
+                             {:read => val[2], :write => val[5]}
+                           }
+                         | WRITE EQ NUMBER_VALUE READ EQ NUMBER_VALUE
+                           {
+                             {:read => val[5], :write => val[2]}
+                           }
 
   index_definition_list : index_definition
                           {
@@ -138,6 +148,26 @@ rule
                      {
                        {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
                      }
+                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
+                     {
+                       {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
+                     }
+                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
+                     {
+                       {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
+                     }
+
+  global_index_keys : IDENTIFIER attr_type_list
+                      {
+                        {:hash => {:key => val[0], :type => val[1]}}
+                      }
+                    | IDENTIFIER attr_type_list ',' IDENTIFIER attr_type_list
+                      {
+                        {
+                          :hash => {:key => val[0], :type => val[1]},
+                          :range => {:key => val[3], :type => val[4]},
+                        }
+                      }
 
   index_type_definition : ALL
                           {
@@ -523,6 +553,7 @@ KEYWORDS = %w(
   DROP
   FROM
   GET
+  GLOBAL
   HASH
   INCLUDE
   INDEX
