@@ -22,13 +22,16 @@ def parse_options
     opt.on('-s', '--secret-key=SECRET_KEY')          {|v| options.secret_access_key      = v      }
     opt.on('-r', '--region=REGION_OR_ENDPOINT')      {|v| options.ddb_endpoint_or_region = v      }
 
-    opt.on('',   '--uri=URI') {|v|
+    url_opt = proc do |v|
       uri = v
       uri = "http://#{uri}" unless uri =~ %r|\A\w+://|
       uri = URI.parse(uri)
       raise URI::InvalidURIError, "invalid shceme: #{v}" unless /\Ahttps?\Z/ =~ uri.scheme
       options.ddb_endpoint_or_region = uri
-    }
+    end
+
+    opt.on('',   '--url=URL', &url_opt)
+    opt.on('',   '--uri=URL (DEPRECATION)', &url_opt)
 
     opt.on('-e', '--eval=COMMAND')                   {|v| options.command                = v      }
     opt.on('-t', '--timeout=SECOND', Integer)        {|v| options.timeout                = v.to_i }
