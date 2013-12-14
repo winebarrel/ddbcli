@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+
 require 'fileutils'
 require 'pathname'
 require 'stringio'
+require 'ddbcli/version'
 
 ROOT_DIR = Pathname.new(__FILE__).join('..').expand_path
 LIB_DIR = ROOT_DIR.join('lib')
-DEST_FILE = 'pkg/ddbcli'
+DEST_FILE = "pkg/ddbcli-#{DynamoDB::VERSION}"
 
 JSON_VERSION = '1.8.1'
 JSON_ARCHIVE = ROOT_DIR.join("v#{JSON_VERSION}.tar.gz")
