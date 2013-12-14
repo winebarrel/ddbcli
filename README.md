@@ -88,10 +88,12 @@ INSERT INTO table_name SELECT ALL ...
 UPDATE table_name {SET|ADD} attr1 = 'val1', ... WHERE key1 = '...' AND ...
 UPDATE ALL table_name {SET|ADD} attr1 = 'val1', ... [WHERE attr1 = '...' AND ...] [LIMIT limit]
   updates items
+  ("UPDATE" can update only one record. Please use "UPDATE ALL", when you update more than one.)
 
 DELETE FROM table_name WHERE key1 = '...' AND ..
 DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
   deletes items
+  ("DELETE" can delete only one record. Please use "DELETE ALL", when you update more than one.)
 
 SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
 SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
