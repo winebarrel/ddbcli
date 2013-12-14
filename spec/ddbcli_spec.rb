@@ -152,7 +152,7 @@ describe 'ddbcli' do
     )
   end
 
-  it 'create table with GSI' do
+  it 'alter table' do
     ddbcli(<<-'EOS')
       CREATE TABLE `foo` (
         `id`  NUMBER HASH,
@@ -181,6 +181,48 @@ describe 'ddbcli' do
   {"NumberOfDecreasesToday"=>0,
    "ReadCapacityUnits"=>4,
    "WriteCapacityUnits"=>4},
+ "TableSizeBytes"=>0,
+ "ItemCount"=>0,
+ "GlobalSecondaryIndexes"=>
+  [{"IndexName"=>"idx_bar",
+    "KeySchema"=>[{"AttributeName"=>"val2", "KeyType"=>"HASH"}],
+    "Projection"=>{"ProjectionType"=>"ALL"},
+    "IndexStatus"=>"ACTIVE",
+    "ProvisionedThroughput"=>{"ReadCapacityUnits"=>1, "WriteCapacityUnits"=>1},
+    "IndexSizeBytes"=>0,
+    "ItemCount"=>0}]}
+    )
+  end
+
+  it 'create table like' do
+    ddbcli(<<-'EOS')
+      CREATE TABLE `foo` (
+        `id`  NUMBER HASH,
+        `val` STRING RANGE,
+        GLOBAL INDEX `idx_bar` (`val2` STRING) ALL read=1 write=1
+      ) read=2 write=2
+    EOS
+
+    ddbcli('create table foo2 like foo')
+
+    out = ddbcli('desc foo2')
+    out = JSON.parse(out)
+    out.delete('CreationDateTime')
+
+    expect(out).to eq(
+{"AttributeDefinitions"=>
+  [{"AttributeName"=>"id", "AttributeType"=>"N"},
+   {"AttributeName"=>"val", "AttributeType"=>"S"},
+   {"AttributeName"=>"val2", "AttributeType"=>"S"}],
+ "TableName"=>"foo2",
+ "KeySchema"=>
+  [{"AttributeName"=>"id", "KeyType"=>"HASH"},
+   {"AttributeName"=>"val", "KeyType"=>"RANGE"}],
+ "TableStatus"=>"ACTIVE",
+ "ProvisionedThroughput"=>
+  {"NumberOfDecreasesToday"=>0,
+   "ReadCapacityUnits"=>2,
+   "WriteCapacityUnits"=>2},
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "GlobalSecondaryIndexes"=>

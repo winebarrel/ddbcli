@@ -512,6 +512,26 @@ module DynamoDB
         end
       end
 
+      global_secondary_indexes = (table_info['GlobalSecondaryIndexes'] || [])
+
+      unless global_secondary_indexes.empty?
+        req_hash['GlobalSecondaryIndexes'] = global_secondary_indexes.map do |gsi|
+          h = {}
+
+          %w(IndexName KeySchema Projection).each do |i|
+            h[i] = gsi[i]
+          end
+
+          h['ProvisionedThroughput'] = h_pt = {}
+
+          %w(ReadCapacityUnits WriteCapacityUnits).each do |i|
+            h_pt[i] = gsi['ProvisionedThroughput'][i]
+          end
+
+          h
+        end
+      end
+
       if parsed.capacity
         req_hash['ProvisionedThroughput'] = {
           'ReadCapacityUnits'  => parsed.capacity[:read],
