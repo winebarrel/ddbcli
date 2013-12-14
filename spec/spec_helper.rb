@@ -1,4 +1,5 @@
 require 'json'
+require 'pp'
 require 'tempfile'
 
 %w(AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_REGION).each do |name|
@@ -43,15 +44,7 @@ def clean_tables
 end
 
 RSpec.configure do |config|
-  config.before(:all) do
-    clean_tables
-  end
-
   config.before(:each) do
-    # nothing to do
-  end
-
-  config.after(:all) do
     clean_tables
   end
 end
