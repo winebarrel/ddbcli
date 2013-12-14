@@ -14,13 +14,15 @@ def ddbcli(input = nil, args = [])
     end
   end
 
-  args = ['--url', 'localhost:8000'] + args
+  cmd = File.expand_path(File.dirname(__FILE__) + '/../bin/ddbcli')
   out = nil
 
+  args = ['--url', 'localhost:8000'] + args
+
   if input
-    out = `cat #{input} | ddbcli #{args.join(' ')} 2>&1`
+    out = `cat #{input} | #{cmd} #{args.join(' ')} 2>&1`
   else
-    out = `ddbcli #{args.join(' ')} 2>&1`
+    out = `#{cmd} #{args.join(' ')} 2>&1`
   end
 
   raise out unless $?.success?
@@ -35,7 +37,16 @@ def clean_tables
   end
 
   show_tables.call.each do |name|
-    ddbcli("drop table #{name}")
+    begin
+      ddbcli("drop table #{name}")
+    rescue => e
+      if e.message =~ /Attempt to change a resource which is still in use: Table is being created/
+        sleep 1
+        retry
+      else
+        raise e
+      end
+    end
   end
 
   until show_tables.call.empty?

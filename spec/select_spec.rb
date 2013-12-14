@@ -4,7 +4,9 @@ describe 'ddbcli' do
       ddbcli(<<-'EOS')
 CREATE TABLE `employees` (
   `emp_no` NUMBER HASH,
-  `birth_date` STRING RANGE
+  `birth_date` STRING RANGE,
+  INDEX `local_idx` (`gender` STRING) ALL,
+  GLOBAL INDEX `global_idx` (`gender` STRING, `hire_date` STRING) ALL
 ) read=2 write=2;
 
 INSERT INTO `employees`
@@ -21,6 +23,60 @@ VALUES
   ("1955-04-26",4,"Zine","M","1991-06-19","Butner"),
   ("1961-04-28",4,"Selwyn","F","1994-08-12","Parascandalo");
       EOS
+    end
+
+    it 'select using GSI' do
+      pending('GSI does not work in DynamoDB Local')
+
+      out = ddbcli('select * from employees use index (global_idx) where gender = "M" and hire_date < "1990-01-01"')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1962-07-06",
+  "emp_no"=>4,
+  "first_name"=>"Tristan",
+  "gender"=>"M",
+  "hire_date"=>"1985-07-20",
+  "last_name"=>"Biran"},
+ {"birth_date"=>"1959-07-01",
+  "emp_no"=>4,
+  "first_name"=>"Dayanand",
+  "gender"=>"M",
+  "hire_date"=>"1989-09-01",
+  "last_name"=>"Waterhouse"}]
+      )
+    end
+
+    it 'select using LSI' do
+      out = ddbcli('select * from employees use index (local_idx) where emp_no = 4 and gender = "M"')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1962-07-06",
+  "emp_no"=>4,
+  "first_name"=>"Tristan",
+  "gender"=>"M",
+  "hire_date"=>"1985-07-20",
+  "last_name"=>"Biran"},
+ {"birth_date"=>"1959-07-01",
+  "emp_no"=>4,
+  "first_name"=>"Dayanand",
+  "gender"=>"M",
+  "hire_date"=>"1989-09-01",
+  "last_name"=>"Waterhouse"},
+ {"birth_date"=>"1957-09-16",
+  "emp_no"=>4,
+  "first_name"=>"Aemilian",
+  "gender"=>"M",
+  "hire_date"=>"1990-09-25",
+  "last_name"=>"Roccetti"},
+ {"birth_date"=>"1955-04-26",
+  "emp_no"=>4,
+  "first_name"=>"Zine",
+  "gender"=>"M",
+  "hire_date"=>"1991-06-19",
+  "last_name"=>"Butner"}]
+      )
     end
 
     it 'select by hash and range key' do
@@ -146,6 +202,44 @@ VALUES
   "gender"=>"M",
   "hire_date"=>"1985-07-20",
   "last_name"=>"Biran"}]
+      )
+    end
+
+    it 'scan which condition' do
+      out = ddbcli('select all * from employees where hire_date >= "1990-01-01"')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1956-05-15",
+  "emp_no"=>2,
+  "first_name"=>"Cathie",
+  "gender"=>"M",
+  "hire_date"=>"1997-04-11",
+  "last_name"=>"Keohane"},
+ {"birth_date"=>"1961-10-19",
+  "emp_no"=>2,
+  "first_name"=>"Collette",
+  "gender"=>"M",
+  "hire_date"=>"1993-02-26",
+  "last_name"=>"Ghemri"},
+ {"birth_date"=>"1955-04-26",
+  "emp_no"=>4,
+  "first_name"=>"Zine",
+  "gender"=>"M",
+  "hire_date"=>"1991-06-19",
+  "last_name"=>"Butner"},
+ {"birth_date"=>"1957-09-16",
+  "emp_no"=>4,
+  "first_name"=>"Aemilian",
+  "gender"=>"M",
+  "hire_date"=>"1990-09-25",
+  "last_name"=>"Roccetti"},
+ {"birth_date"=>"1961-04-28",
+  "emp_no"=>4,
+  "first_name"=>"Selwyn",
+  "gender"=>"F",
+  "hire_date"=>"1994-08-12",
+  "last_name"=>"Parascandalo"}]
       )
     end
   end
