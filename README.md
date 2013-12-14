@@ -41,7 +41,7 @@ ddbcli # show prompt
 
 ![ddbcli demo](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif)
 
-## Use GSI
+## Use Global Secondary Indexes
 
 * [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
 
