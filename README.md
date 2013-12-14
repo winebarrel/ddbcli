@@ -1,7 +1,53 @@
-require 'tempfile'
+# ddbcli
 
-def print_help(options = {})
-  doc =<<EOS
+ddbcli is an interactive command-line client of Amazon DynamoDB.
+
+[![Build Status](https://drone.io/bitbucket.org/winebarrel/ddbcli/status.png)](https://drone.io/bitbucket.org/winebarrel/ddbcli/latest)
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'ddbcli'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install ddbcli
+
+## Usage
+
+```sh
+export AWS_ACCESS_KEY_ID='...'
+export AWS_SECRET_ACCESS_KEY='...'
+export AWS_REGION=ap-northeast-1
+
+ddbcli -e 'show tables'
+#  [
+#    "employees"
+#  ]
+
+ddbcli # show prompt
+```
+
+### Use DynamoDB Local
+
+    $ ddbcli --url localhost:8000
+
+## Demo
+
+![ddbcli demo](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif)
+
+## Use GSI
+
+* https://gist.github.com/winebarrel/7938971
+
+## Help
+
+```
 ##### Query #####
 
 SHOW TABLES [LIMIT num] [LIKE '...']
@@ -144,19 +190,8 @@ Append
 .retry_interval  SECOND?        displays a retry interval second or changes it
 .timeout         SECOND?        displays a timeout second or changes it
 .version                        displays a version
+```
 
-EOS
+## Link
 
-  if options[:pagerize]
-    Tempfile.open("ddbcli.#{$$}.#{Time.now.to_i}") do |f|
-      f.puts(doc)
-      f.flush
-
-      unless system("less #{f.path}")
-        puts doc
-      end
-    end
-  else
-    puts doc
-  end
-end
+* [RubyGems.org site](http://rubygems.org/gems/ddbcli)
