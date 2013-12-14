@@ -1,5 +1,6 @@
 describe 'ddbcli' do
   it 'version' do
-    expect(1).to eq(1)
+    out = ddbcli(nil, ['-v'])
+    expect(out).to match /ddbcli \d+\.\d+\.\d+/
   end
 end
