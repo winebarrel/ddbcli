@@ -18,7 +18,8 @@ module DynamoDB
       if ENDPOINTS.key?(endpoint_or_region)
         [endpoint_or_region, ENDPOINTS[endpoint_or_region]]
       elsif ENDPOINTS.value?(endpoint_or_region)
-        [ENDPOINTS.key(endpoint_or_region), endpoint_or_region]
+        ep_key = ENDPOINTS.respond_to?(:key) ? ENDPOINTS.key(endpoint_or_region) : ENDPOINTS.index(endpoint_or_region)
+        [ep_key, endpoint_or_region]
       else
         raise DynamoDB::Error, 'Unknown endpoint or region'
       end
