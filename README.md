@@ -2,6 +2,8 @@
 
 ddbcli is an interactive command-line client of Amazon DynamoDB.
 
+[![Build Status](https://drone.io/bitbucket.org/winebarrel/ddbcli/status.png)](https://drone.io/bitbucket.org/winebarrel/ddbcli/latest)
+
 ## Installation
 
 Add this line to your application's Gemfile:
