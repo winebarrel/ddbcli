@@ -34,7 +34,7 @@ CREATE TABLES table_name LIKE another_table_name [READ = num, WRITE = num]
 DROP TABLE table_name
   deletes a table
 
-ALTER TABLE table_name READ = num, WRITE = num
+ALTER TABLE table_name READ = num WRITE = num
   updates the provisioned throughput
 
 GET {*|attr1,attr2,...} FROM table_name WHERE key1 = '...' AND ...
