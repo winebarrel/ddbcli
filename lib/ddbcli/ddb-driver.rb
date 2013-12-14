@@ -390,8 +390,13 @@ module DynamoDB
 
       define_attribute = lambda do |attr_name, attr_type|
         attr_defs = req_hash['AttributeDefinitions']
+        same_attr = attr_defs.find {|i| i['AttributeName'] == attr_name }
 
-        unless attr_defs.map {|i| i['AttributeName'] }.include?(attr_name)
+        if same_attr
+          if same_attr['AttributeType'] != attr_type
+            raise DynamoDB::Error, "different types have been defined: #{attr_name}"
+          end
+        else
           attr_defs << {
             'AttributeName' => attr_name,
             'AttributeType' => attr_type,
