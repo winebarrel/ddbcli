@@ -16,7 +16,7 @@ SHOW REGIONS
 SHOW CREATE TABLE table_name
   displays a CREATE TABLE statement
 
-CREATE TABLES table_name (
+CREATE TABLE table_name (
      key_name {STRING|NUMBER|BINARY} HASH
   [, key_name {STRING|NUMBER|BINARY} RANGE]
   [, INDEX index1_name (attr1 {STRING|NUMBER|BINARY}) {ALL|KEYS_ONLY|INCLUDE (attr, ...)}
@@ -28,7 +28,7 @@ CREATE TABLES table_name (
 ) READ = num WRITE = num
   creates a table
 
-CREATE TABLES table_name LIKE another_table_name [READ = num WRITE = num]
+CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num]
   creates a table like another table
 
 DROP TABLE table_name
