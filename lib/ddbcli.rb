@@ -1,3 +1,5 @@
+require 'ddbcli/version'
+
 require 'ddbcli/ddb-binary'
 require 'ddbcli/ddb-client'
 require 'ddbcli/ddb-driver'
