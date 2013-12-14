@@ -37,16 +37,7 @@ def clean_tables
   end
 
   show_tables.call.each do |name|
-    begin
-      ddbcli("drop table #{name}")
-    rescue => e
-      if e.message =~ /Attempt to change a resource which is still in use: Table is being created/
-        sleep 1
-        retry
-      else
-        raise e
-      end
-    end
+    ddbcli("drop table #{name}")
   end
 
   until show_tables.call.empty?
