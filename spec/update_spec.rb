@@ -1,5 +1,5 @@
 describe 'ddbcli' do
-  context 'select' do
+  context 'update' do
     before do
       ddbcli(<<-'EOS')
 CREATE TABLE `employees` (
@@ -24,7 +24,7 @@ VALUES
     end
 
     it 'update by pk' do
-      ddbcli('update employees set hire_date = "1977-11-11", foo = "bar" where emp_no = 4 and birth_date = "1991-06-19"')
+      ddbcli('update employees set hire_date = "1977-11-11", foo = "bar" where emp_no = 4 and birth_date = "1961-04-28"')
       out = ddbcli('select all * from employees')
       out = JSON.parse(out)
 
@@ -80,19 +80,16 @@ VALUES
  {"birth_date"=>"1961-04-28",
   "emp_no"=>4,
   "first_name"=>"Selwyn",
+  "foo"=>"bar",
   "gender"=>"F",
-  "hire_date"=>"1994-08-12",
+  "hire_date"=>"1977-11-11",
   "last_name"=>"Parascandalo"},
  {"birth_date"=>"1962-07-06",
   "emp_no"=>4,
   "first_name"=>"Tristan",
   "gender"=>"M",
   "hire_date"=>"1985-07-20",
-  "last_name"=>"Biran"},
- {"birth_date"=>"1991-06-19",
-  "emp_no"=>4,
-  "foo"=>"bar",
-  "hire_date"=>"1977-11-11"}]
+  "last_name"=>"Biran"}]
       )
     end
 
