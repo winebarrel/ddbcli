@@ -43,7 +43,7 @@ ddbcli # show prompt
 
 ## Use GSI
 
-* https://gist.github.com/winebarrel/7938971
+* [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
 
 ## Help
 
