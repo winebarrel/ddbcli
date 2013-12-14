@@ -8,6 +8,16 @@ ddbcli is an interactive command-line client of Amazon DynamoDB.
 
     $ gem install ddbcli
 
+If you are not using RubyGems, you can use the script files that depend on only Ruby.
+
+  * [ddbcli-0.3.1](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.1)
+
+```sh
+wget https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.1
+sudo cp ddbcli-0.3.1 /usr/local/bin/ddbcli
+sudo chmod 755 /usr/local/bin/ddbcli
+```
+
 ## Usage
 
 ```sh
