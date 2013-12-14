@@ -388,21 +388,27 @@ module DynamoDB
       local_indices = (parsed.indices || []).select {|i| not i[:global] }
       global_indices = (parsed.indices || []).select {|i| i[:global] }
 
+      define_attribute = lambda do |attr_name, attr_type|
+        attr_defs = req_hash['AttributeDefinitions']
+
+        unless attr_defs.map {|i| i['AttributeName'] }.include?(attr_name)
+          attr_defs << {
+            'AttributeName' => attr_name,
+            'AttributeType' => attr_type,
+          }
+        end
+      end
+
       define_index = lambda do |idx_def, def_idx_opts|
         global_idx = def_idx_opts[:global]
 
+
         if global_idx
           idx_def[:keys].each do |key_type, name_type|
-            req_hash['AttributeDefinitions'] << {
-              'AttributeName' => name_type[:key],
-              'AttributeType' => name_type[:type],
-            }
+            define_attribute.call(name_type[:key], name_type[:type])
           end
         else
-          req_hash['AttributeDefinitions'] << {
-            'AttributeName' => idx_def[:key],
-            'AttributeType' => idx_def[:type],
-          }
+          define_attribute.call(idx_def[:key], idx_def[:type])
         end
 
         secondary_index = {
