@@ -91,7 +91,7 @@ rule
                 }
 
   create_definition : IDENTIFIER attr_type_list HASH
-                      {  
+                      {
                         {:hash => {:name => val[0], :type => val[1]}, :range => nil, :indices => nil}
                       }
                     | IDENTIFIER attr_type_list HASH ',' IDENTIFIER attr_type_list RANGE
@@ -191,9 +191,9 @@ rule
                                val[0] + [val[2]]
                              }
 
-  drop_stmt : DROP TABLE IDENTIFIER
+  drop_stmt : DROP TABLE identifier_list
               {
-                struct(:DROP, :table => val[2])
+                struct(:DROP, :tables => val[2])
               }
 
   describe_stmt : DESCRIBE IDENTIFIER
@@ -445,14 +445,7 @@ rule
                   struct(:INSERT_SCAN, :table => val[2], :select => val[3])
                 }
 
-  attr_to_insert_list : IDENTIFIER
-                        {
-                          [val[0]]
-                        }
-                      | attr_to_insert_list ',' IDENTIFIER
-                        {
-                          val[0] + [val[2]]
-                        }
+  attr_to_insert_list : identifier_list
 
   insert_value_clause : '(' insert_value_list ')'
                         {
@@ -525,6 +518,15 @@ rule
                 {
                    val[0] + [val[2]]
                 }
+
+  identifier_list : IDENTIFIER
+                    {
+                      [val[0]]
+                    }
+                  | identifier_list ',' IDENTIFIER
+                    {
+                      val[0] + [val[2]]
+                    }
 
 ---- header
 

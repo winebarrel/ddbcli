@@ -237,4 +237,48 @@ describe 'ddbcli' do
     "ItemCount"=>0}]}
     )
   end
+
+  it 'drop table' do
+    ddbcli(<<-'EOS')
+      CREATE TABLE `foo` (
+        `id`  NUMBER HASH,
+        `val` STRING RANGE,
+        GLOBAL INDEX `idx_bar` (`val2` STRING) ALL read=1 write=1
+      ) read=2 write=2;
+
+      CREATE TABLE `foo2` (
+        `id`  NUMBER HASH,
+        `val` STRING RANGE,
+        GLOBAL INDEX `idx_bar` (`val2` STRING) ALL read=1 write=1
+      ) read=2 write=2;
+    EOS
+
+    ddbcli('drop table foo')
+
+    out = ddbcli('show tables')
+    out = JSON.parse(out)
+    expect(out).to eq(['foo2'])
+  end
+
+  it 'drop tables' do
+    ddbcli(<<-'EOS')
+      CREATE TABLE `foo` (
+        `id`  NUMBER HASH,
+        `val` STRING RANGE,
+        GLOBAL INDEX `idx_bar` (`val2` STRING) ALL read=1 write=1
+      ) read=2 write=2;
+
+      CREATE TABLE `foo2` (
+        `id`  NUMBER HASH,
+        `val` STRING RANGE,
+        GLOBAL INDEX `idx_bar` (`val2` STRING) ALL read=1 write=1
+      ) read=2 write=2;
+    EOS
+
+    ddbcli('drop table foo, foo2')
+
+    out = ddbcli('show tables')
+    out = JSON.parse(out)
+    expect(out).to eq([])
+  end
 end

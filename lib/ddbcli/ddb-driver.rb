@@ -546,7 +546,10 @@ module DynamoDB
     end
 
     def do_drop(parsed)
-      @client.query('DeleteTable', 'TableName' => parsed.table)
+      parsed.tables.each do |table_name|
+        @client.query('DeleteTable', 'TableName' => table_name)
+      end
+
       nil
     end
 
