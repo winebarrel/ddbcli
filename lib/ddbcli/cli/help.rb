@@ -31,8 +31,8 @@ CREATE TABLE table_name (
 CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num]
   creates a table like another table
 
-DROP TABLE table_name
-  deletes a table
+DROP TABLE table_name [, table_name2, ...]
+  deletes tables
 
 ALTER TABLE table_name READ = num WRITE = num
   updates the provisioned throughput
