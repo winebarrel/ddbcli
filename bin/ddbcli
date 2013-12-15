@@ -59,6 +59,16 @@ else
   end
 
   # interactive mode
+  Readline.completion_proc = lambda do |word|
+    complete_words = DynamoDB::Parser::KEYWORDS.grep(/\A#{Regexp.quote word}/i)
+
+    if word.gsub(/[^a-z]+/i, '') =~ /[a-z]+/
+      complete_words = complete_words.map {|i| i.downcase }
+    end
+
+    complete_words
+  end
+
   src = ''
   prompt1 = lambda { "#{driver.region || 'unknown'}> " }
   prompt2 = lambda { "#{' ' * (prompt1.call.length - 3)}-> " }
