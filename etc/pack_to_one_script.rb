@@ -61,6 +61,8 @@ end
 ddbcli_buf = StringIO.new
 recursive_print('ddbcli.rb', 'ddbcli', LIB_DIR, ddbcli_buf)
 
+FileUtils.mkdir_p(DEST_FILE.dirname)
+
 ROOT_DIR.join(DEST_FILE).open('wb', 0755) do |f|
   f.puts '#!/usr/bin/env ruby'
   f.puts json_buf.string
