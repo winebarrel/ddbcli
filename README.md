@@ -10,11 +10,11 @@ ddbcli is an interactive command-line client of Amazon DynamoDB.
 
 If you are not using RubyGems, you can use the script files that depend on only Ruby.
 
-[ddbcli-0.3.3](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.3)
+[ddbcli-0.3.4](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.4)
 
 ```sh
-wget https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.3
-sudo cp ddbcli-0.3.3 /usr/local/bin/ddbcli
+wget https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.4
+sudo cp ddbcli-0.3.4 /usr/local/bin/ddbcli
 sudo chmod 755 /usr/local/bin/ddbcli
 ```
 
