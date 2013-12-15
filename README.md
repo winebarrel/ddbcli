@@ -2,6 +2,7 @@
 
 ddbcli is an interactive command-line client of Amazon DynamoDB.
 
+[![Gem Version](https://badge.fury.io/rb/ddbcli.png)](http://badge.fury.io/rb/ddbcli)
 [![Build Status](https://drone.io/bitbucket.org/winebarrel/ddbcli/status.png)](https://drone.io/bitbucket.org/winebarrel/ddbcli/latest)
 
 ## Installation
