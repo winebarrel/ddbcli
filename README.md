@@ -61,6 +61,10 @@ DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
 
 * [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
 
+## Enabling ctrl-r (reverse-search-history) on OS X
+
+    $ echo 'bind "^R" em-inc-search-prev' >> ~/.editrc
+
 ## Help
 
 ```
