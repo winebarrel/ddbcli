@@ -4,7 +4,7 @@ require 'fileutils'
 require 'pathname'
 require 'stringio'
 
-ROOT_DIR = Pathname.new(__FILE__).join('..').expand_path
+ROOT_DIR = Pathname.new(__FILE__).dirname.join('..').expand_path
 LIB_DIR = ROOT_DIR.join('lib')
 
 require LIB_DIR.join('ddbcli/version')
