@@ -41,6 +41,21 @@ ddbcli # show prompt
 
 ![ddbcli demo](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif)
 
+## GROUP BY (Aggregate)
+
+```
+ap-northeast-1> select all gender from employees
+             -> where birth_date begins_with '1960'
+             -> | group_by(:gender) {|i| puts "DEBUG: 'i' contains: #{i[0, 3].inspect} ..."\; i.length };
+DEBUG: 'i' contains: [{"gender"=>"M"}, {"gender"=>"M"}, {"gender"=>"M"}] ...
+DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
+{
+  "M": 546,
+  "F": 355
+}
+// 2 rows in set (0.20 sec)
+```
+
 ## Use Global Secondary Indexes
 
 * [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
@@ -167,22 +182,6 @@ Shell
       {"birth_date"=>"1963-07-14", "emp_no"=>16998, ...
       {"birth_date"=>"1964-04-30", "emp_no"=>225407,...
       ...
-
-
-##### GROUP BY (Aggregate) #####
-
-```
-ap-northeast-1> select all gender from employees
-             -> where birth_date begins_with '1960'
-             -> | group_by(:gender) {|i| puts "DEBUG: 'i' contains: #{i[0, 3].inspect} ..."\; i.length };
-DEBUG: 'i' contains: [{"gender"=>"M"}, {"gender"=>"M"}, {"gender"=>"M"}] ...
-DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
-{
-  "M": 546,
-  "F": 355
-}
-// 2 rows in set (0.20 sec)
-```
 
 
 ##### Output to a file #####

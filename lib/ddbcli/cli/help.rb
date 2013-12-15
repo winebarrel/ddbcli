@@ -123,22 +123,6 @@ Shell
       ...
 
 
-##### GROUP BY (Aggregate) #####
-
-```
-ap-northeast-1> select all gender from employees
-             -> where birth_date begins_with '1960'
-             -> | group_by(:gender) {|i| puts "DEBUG: 'i' contains: #{i[0, 3].inspect} ..."\; i.length };
-DEBUG: 'i' contains: [{"gender"=>"M"}, {"gender"=>"M"}, {"gender"=>"M"}] ...
-DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
-{
-  "M": 546,
-  "F": 355
-}
-// 2 rows in set (0.20 sec)
-```
-
-
 ##### Output to a file #####
 
 Overwrite
