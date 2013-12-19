@@ -211,7 +211,3 @@ Append
 .timeout         SECOND?        displays a timeout second or changes it
 .version                        displays a version
 ```
-
-## Link
-
-* [RubyGems.org site](http://rubygems.org/gems/ddbcli)
