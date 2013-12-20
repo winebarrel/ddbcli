@@ -61,7 +61,7 @@ DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
 
 * [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
 
-## Enabling ctrl-r (reverse-search-history) on OS X
+## Enable ctrl-r (reverse-search-history) on OS X
 
     $ echo 'bind "^R" em-inc-search-prev' >> ~/.editrc
 
@@ -211,7 +211,3 @@ Append
 .timeout         SECOND?        displays a timeout second or changes it
 .version                        displays a version
 ```
-
-## Link
-
-* [RubyGems.org site](http://rubygems.org/gems/ddbcli)
