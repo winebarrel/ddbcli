@@ -17,7 +17,7 @@ def ddbcli(input = nil, args = [])
   cmd = File.expand_path(File.dirname(__FILE__) + '/../bin/ddbcli')
   out = nil
 
-  args = ['--url', 'localhost:8000'] + args
+  args = ['--url', ENV['DYNAMODB_URL'] || 'localhost:8000'] + args
 
   if input
     out = `cat #{input} | #{cmd} #{args.join(' ')} 2>&1`
