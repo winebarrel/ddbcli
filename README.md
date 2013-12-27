@@ -15,8 +15,9 @@ If you are not using RubyGems, you can use the script files that depend on only 
 
 ```sh
 wget https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-0.3.5
-sudo cp ddbcli-0.3.5 /usr/local/bin/ddbcli
-sudo chmod 755 /usr/local/bin/ddbcli
+mv ddbcli-0.3.5 ddbcli
+chmod 755 ddbcli
+./ddbcli # show prompt
 ```
 
 ## Usage
