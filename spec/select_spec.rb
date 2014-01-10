@@ -26,7 +26,7 @@ VALUES
     end
 
     it 'select using GSI' do
-      #pending('GSI does not work in DynamoDB Local')
+      pending('GSI does not work in DynamoDB Local')
 
       out = ddbcli('select * from employees use index (global_idx) where gender = "M" and hire_date < "1990-01-01"')
       out = JSON.parse(out)
