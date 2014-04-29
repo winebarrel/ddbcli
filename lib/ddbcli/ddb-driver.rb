@@ -605,7 +605,7 @@ module DynamoDB
         end # key conditions / scan filter
 
         # query filter
-        if parsed.having
+        if action == 'Query' and parsed.having
           req_hash['QueryFilter'] = {}
 
           parsed.having.each do |key, operator, values|
