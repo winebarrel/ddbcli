@@ -13,7 +13,7 @@ def ddbcli(input = nil, args = [])
     tempfile = Tempfile.open('ddbcli')
     tempfile << input
     tempfile.flush
-    tempfile.tempfile
+    tempfile.rewind
     input = tempfile.path
   end
 
