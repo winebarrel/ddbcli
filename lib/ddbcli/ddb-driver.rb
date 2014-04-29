@@ -604,6 +604,21 @@ module DynamoDB
           end
         end # key conditions / scan filter
 
+        # query filter
+        if parsed.having
+          req_hash['QueryFilter'] = {}
+
+          parsed.having.each do |key, operator, values|
+            h = req_hash['QueryFilter'][key] = {
+              'ComparisonOperator' => operator.to_s
+            }
+
+            h['AttributeValueList'] = values.map do |val|
+              convert_to_attribute_value(val)
+            end
+          end
+        end # query filter
+
         rd = nil
 
         begin

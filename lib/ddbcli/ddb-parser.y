@@ -205,13 +205,13 @@ rule
                     struct(:DESCRIBE, :table => val[1])
                   }
 
-  select_stmt : SELECT attrs_to_get FROM IDENTIFIER use_index_clause select_where_clause order_clause limit_clause
+  select_stmt : SELECT attrs_to_get FROM IDENTIFIER use_index_clause select_where_clause order_clause having_clause limit_clause
                 {
-                  struct(:SELECT, :attrs => val[1], :table => val[3], :index => val[4], :conds => val[5], :order_asc => val[6], :limit => val[7], :count => false)
+                  struct(:SELECT, :attrs => val[1], :table => val[3], :index => val[4], :conds => val[5], :order_asc => val[6], :having => val[7], :limit => val[8], :count => false)
                 }
-              | SELECT COUNT '(' '*' ')' FROM IDENTIFIER use_index_clause select_where_clause order_clause limit_clause
+              | SELECT COUNT '(' '*' ')' FROM IDENTIFIER use_index_clause select_where_clause order_clause having_clause limit_clause
                 {
-                  struct(:SELECT, :attrs => [], :table => val[6], :index => val[7], :conds => val[8], :order_asc => val[9], :limit => val[10], :count => true)
+                  struct(:SELECT, :attrs => [], :table => val[6], :index => val[7], :conds => val[8], :order_asc => val[9], :having => val[10], :limit => val[11], :count => true)
                 }
 
   scan_stmt : SELECT ALL attrs_to_get FROM IDENTIFIER scan_where_clause limit_clause
@@ -368,6 +368,12 @@ rule
 
   limit_clause :
                | LIMIT NUMBER_VALUE
+                 {
+                   val[1]
+                 }
+
+  having_clause :
+               | HAVING scan_expr_list
                  {
                    val[1]
                  }
@@ -557,6 +563,7 @@ KEYWORDS = %w(
   GET
   GLOBAL
   HASH
+  HAVING
   INCLUDE
   INDEX
   INSERT
