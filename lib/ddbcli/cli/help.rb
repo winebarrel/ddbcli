@@ -55,7 +55,7 @@ DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}
   deletes items
   ("DELETE" can delete only one record. Please use "DELETE ALL", when you update more than one.)
 
-SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
+SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [HAVING attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
 SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
 SELECT segment/total_segments {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
   queries using the Query/Scan action
@@ -96,9 +96,10 @@ Query (SELECT)
   = | <= | < | >= | > | BEGINS_WITH | BETWEEN
   see http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-KeyConditions
 
-Scan (SELECT ALL)
+Scan (SELECT ALL), QueryFilter (HAVING)
   = | <> | != | <= | < | >= | > | IS NOT NULL | IS NULL | CONTAINS | NOT CONTAINS | BEGINS_WITH | IN | BETWEEN
-  see http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ScanFilter
+  see http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html#DDB-Scan-request-ScanFilter,
+      http://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html#DDB-Query-request-QueryFilter
 
 
 ##### Pass to Ruby/Shell #####
