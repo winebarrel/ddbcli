@@ -7,11 +7,14 @@ require 'tempfile'
 end
 
 def ddbcli(input = nil, args = [])
+  tempfile = nil
+
   if input
-    Tempfile.open('ddbcli') do |f|
-      f << input
-      input = f.path
-    end
+    tempfile = Tempfile.open('ddbcli')
+    tempfile << input
+    tempfile.flush
+    tempfile.tempfile
+    input = tempfile.path
   end
 
   cmd = File.expand_path(File.dirname(__FILE__) + '/../bin/ddbcli')
@@ -21,6 +24,7 @@ def ddbcli(input = nil, args = [])
 
   if input
     out = `cat #{input} | #{cmd} #{args.join(' ')} 2>&1`
+    tempfile.close if tempfile
   else
     out = `#{cmd} #{args.join(' ')} 2>&1`
   end
