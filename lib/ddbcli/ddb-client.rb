@@ -246,4 +246,4 @@ EOS
       return retval
     end
   end # Client
-end # SimpleDB
+end # DynamoDB
