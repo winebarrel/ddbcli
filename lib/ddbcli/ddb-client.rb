@@ -74,7 +74,7 @@ EOS
         'X-Amz-Content-Sha256' => hexhash(req_body),
         'Accept'               => '*/*',
         'Accept-Encoding'      => 'gzip',
-     }
+      }
 
       headers['Authorization'] = authorization(date, headers, req_body)
 
