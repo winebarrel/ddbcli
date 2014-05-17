@@ -69,7 +69,7 @@ EOS
         'X-Amz-Target'         => "DynamoDB_#{API_VERSION.gsub('-', '')}.#{action}",
         'Content-Length'       => req_body.length.to_s,
         'User-Agent'           => USER_AGENT,
-        'Host'                 => 'dynamodb.us-east-1.amazonaws.com',
+        'Host'                 => @endpoint.host,
         'X-Amz-Date'           => iso8601(date),
         'X-Amz-Content-Sha256' => hexhash(req_body),
         'Accept'               => '*/*',
