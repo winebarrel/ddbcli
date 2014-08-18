@@ -94,6 +94,10 @@ rule
                       {
                         {:hash => {:name => val[0], :type => val[1]}, :range => nil, :indices => nil}
                       }
+                    | IDENTIFIER attr_type_list HASH ',' index_definition_list
+                      {
+                        {:hash => {:name => val[0], :type => val[1]}, :range => nil, :indices => val[4]}
+                      }
                     | IDENTIFIER attr_type_list HASH ',' IDENTIFIER attr_type_list RANGE
                       {
                         {:hash => {:name => val[0], :type => val[1]}, :range => {:name => val[4], :type => val[5]}, :indices => nil}
