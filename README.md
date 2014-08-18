@@ -108,6 +108,9 @@ DROP TABLE table_name [, table_name2, ...]
 ALTER TABLE table_name READ = num WRITE = num
   updates the provisioned throughput
 
+ALTER TABLE table_name CHANGE INDEX index_name READ = num WRITE = num
+  updates GSI provisioned throughput
+
 GET {*|attr1,attr2,...} FROM table_name WHERE key1 = '...' AND ...
   gets items
 
