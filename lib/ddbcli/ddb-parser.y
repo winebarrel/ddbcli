@@ -69,7 +69,12 @@ rule
 
   alter_stmt : ALTER TABLE IDENTIFIER capacity_clause
                {
-                 struct(:ALTER_TABLE, :table => val[2], :capacity => val[3])
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3])
+               }
+
+             | ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
+               {
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6])
                }
 
   use_stmt : USE IDENTIFIER
@@ -556,6 +561,7 @@ KEYWORDS = %w(
   BEGINS_WITH
   BETWEEN
   BINARY
+  CHANGE
   CREATE
   CONTAINS
   COUNT

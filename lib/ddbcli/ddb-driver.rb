@@ -212,6 +212,37 @@ module DynamoDB
         %w(ReadCapacityUnits WriteCapacityUnits).each do |i|
           h[table_name][i] = provisioned_throughput[i]
         end
+
+        lsis = table_info.fetch('LocalSecondaryIndexes', [])
+
+        unless lsis.empty?
+          lsi_h = h[table_name]['LocalSecondaryIndexes'] = {}
+
+          lsis.each do |lsi|
+            lsi_h[lsi['IndexName']] = {
+              'IndexSizeBytes'        => lsi['IndexSizeBytes'],
+              'ItemCount'             => lsi['ItemCount'],
+            }
+          end
+        end
+
+        gsis = table_info.fetch('GlobalSecondaryIndexes', [])
+
+        unless gsis.empty?
+          gsi_h = h[table_name]['GlobalSecondaryIndexes'] = {}
+
+          gsis.each do |gsi|
+            gsi_h[gsi['IndexName']] = {
+              'IndexSizeBytes'        => gsi['IndexSizeBytes'],
+              'IndexStatus'           => gsi['IndexStatus'],
+              'ItemCount'             => gsi['ItemCount'],
+              'ProvisionedThroughput' => {
+                'ReadCapacityUnits'  => gsi['ProvisionedThroughput']['ReadCapacityUnits'],
+                'WriteCapacityUnits' => gsi['ProvisionedThroughput']['WriteCapacityUnits'],
+              },
+            }
+          end
+        end
       end
 
       return h
@@ -319,13 +350,22 @@ module DynamoDB
     end
 
     def do_alter_table(parsed)
-      req_hash = {
-        'TableName' => parsed.table,
-        'ProvisionedThroughput' => {
-          'ReadCapacityUnits'  => parsed.capacity[:read],
-          'WriteCapacityUnits' => parsed.capacity[:write],
-        },
+      req_hash = {'TableName' => parsed.table}
+      throughput = {
+        'ReadCapacityUnits'  => parsed.capacity[:read],
+        'WriteCapacityUnits' => parsed.capacity[:write]
       }
+
+      if parsed.index_name
+        req_hash['GlobalSecondaryIndexUpdates'] = [{
+          'Update' => {
+            'IndexName' => parsed.index_name,
+            'ProvisionedThroughput' => throughput,
+          },
+        }]
+      else
+        req_hash['ProvisionedThroughput'] = throughput
+      end
 
       @client.query('UpdateTable', req_hash)
       nil
