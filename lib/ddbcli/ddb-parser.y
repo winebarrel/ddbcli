@@ -419,7 +419,7 @@ rule
                           val[0] + [val[2]]
                         }
 
-  attr_to_update : IDENTIFIER EQ value_or_null
+  attr_to_update : IDENTIFIER EQ value
                    {
                      [val[0], val[2]]
                    }
@@ -490,13 +490,12 @@ rule
                 struct(:NEXT)
               }
 
-  value_or_null : value | NULL
-
   value : single_value
         | value_list
         | list
         | map
         | BOOL
+        | NULL
 
   list : '[' ']'
        | '[' list_items ']'

@@ -917,6 +917,8 @@ module DynamoDB
         {'M' => h}
       when TrueClass, FalseClass
         {'BOOL' => val.to_s}
+      when NilClass
+        {'NULL' => "true"}
       else
         suffix = ''
         obj = val
@@ -965,6 +967,8 @@ module DynamoDB
           ddb_val.map {|i| str_to_num(i) }
         when 'N'
           str_to_num(ddb_val)
+        when 'NULL'
+          nil
         else
           ddb_val
         end
