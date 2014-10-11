@@ -165,6 +165,12 @@ List
 Map
   {key1:'String', "key2":(1, 2, 3), key3: ['FOO', 'BAR'], ...}
 
+Bool
+  true, false
+
+Null
+  null
+
 
 ##### Operator #####
 
