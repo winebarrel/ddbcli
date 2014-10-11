@@ -133,7 +133,7 @@ def scan
       yield [:STRING_VALUE, tok.slice(1...-1).gsub(/""/, '"')]
     elsif (tok = @ss.scan /\d+(?:\.\d+)?/)
       yield [:NUMBER_VALUE, (tok =~ /\./ ? tok.to_f : tok.to_i)]
-    elsif (tok = @ss.scan /[,\(\)\*\/]/)
+    elsif (tok = @ss.scan /[,\(\)\*\/\[\]\{\}]/)
       yield [tok, tok]
     elsif (tok = @ss.scan /\|(?:.*)/)
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]

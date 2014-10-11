@@ -908,26 +908,35 @@ module DynamoDB
     end
 
     def convert_to_attribute_value(val)
-      suffix = ''
-      obj = val
-
-      if val.kind_of?(Set)
-        suffix = 'S'
-        obj = val.first
-        val = val.map {|i| i.to_s }
+      case val
+      when Array
+        {'L' => val.map {|v| convert_to_attribute_value(v) }}
+      when Hash
+        h = {}
+        val.each {|k, v| h[k] = convert_to_attribute_value(v) }
+        {'M' => h}
       else
-        val = val.to_s
-      end
+        suffix = ''
+        obj = val
 
-      case obj
-      when DynamoDB::Binary
-        {"B#{suffix}" => val}
-      when String
-        {"S#{suffix}" => val}
-      when Numeric
-        {"N#{suffix}" => val}
-      else
-        raise 'must not happen'
+        if val.kind_of?(Set)
+          suffix = 'S'
+          obj = val.first
+          val = val.map {|i| i.to_s }
+        else
+          val = val.to_s
+        end
+
+        case obj
+        when DynamoDB::Binary
+          {"B#{suffix}" => val}
+        when String
+          {"S#{suffix}" => val}
+        when Numeric
+          {"N#{suffix}" => val}
+        else
+          raise 'must not happen'
+        end
       end
     end
 
