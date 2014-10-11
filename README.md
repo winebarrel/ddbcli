@@ -3,7 +3,6 @@
 ddbcli is an interactive command-line client of Amazon DynamoDB.
 
 [![Gem Version](https://badge.fury.io/rb/ddbcli.png)](http://badge.fury.io/rb/ddbcli)
-[![Build Status](https://drone.io/bitbucket.org/winebarrel/ddbcli/status.png)](https://drone.io/bitbucket.org/winebarrel/ddbcli/latest)
 
 ## Installation
 
@@ -124,6 +123,10 @@ UPDATE ALL table_name {SET|ADD} attr1 = 'val1', ... [WHERE attr1 = '...' AND ...
   updates items
   ("UPDATE" can update only one record. Please use "UPDATE ALL", when you update more than one.)
 
+UPDATE table_name DEL[ETE] attr1, ... WHERE key1 = '...' AND ...
+UPDATE ALL table_name DEL[ETE] attr1, ... [WHERE attr1 = '...' AND ...] [LIMIT limit]
+  updates items (delete attribute)
+
 DELETE FROM table_name WHERE key1 = '...' AND ..
 DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
   deletes items
@@ -160,8 +163,14 @@ Binary
 Identifier
   `ABCD...` or Non-keywords
 
-Array
+Set
   ('String', 'String', ...), (1, 2, 3, ...)
+
+List
+  ['String', (1, 2, 3), {foo: 'FOO', bar: 'BAR'}, ...]
+
+Map
+  {key1:'String', "key2":(1, 2, 3), key3: ['FOO', 'BAR'], ...}
 
 
 ##### Operator #####

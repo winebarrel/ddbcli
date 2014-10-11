@@ -757,12 +757,10 @@ module DynamoDB
 
       parsed.attrs.each do |attr, val|
         h = req_hash['AttributeUpdates'][attr] = {}
+        h['Action'] = parsed.action.to_s.upcase
 
-        if val
-          h['Action'] = parsed.action.to_s.upcase
+        if h['Action'] != 'DELETE'
           h['Value'] = convert_to_attribute_value(val)
-        else
-          h['Action'] = 'DELETE'
         end
       end # attribute updates
 
@@ -794,12 +792,10 @@ module DynamoDB
 
         parsed.attrs.each do |attr, val|
           h = req_hash['AttributeUpdates'][attr] = {}
+          h['Action'] = parsed.action.to_s.upcase
 
-          if val
-            h['Action'] = parsed.action.to_s.upcase
+          if h['Action'] != 'DELETE'
             h['Value'] = convert_to_attribute_value(val)
-          else
-            h['Action'] = 'DELETE'
           end
         end # attribute updates
 
@@ -908,26 +904,39 @@ module DynamoDB
     end
 
     def convert_to_attribute_value(val)
-      suffix = ''
-      obj = val
-
-      if val.kind_of?(Array)
-        suffix = 'S'
-        obj = val.first
-        val = val.map {|i| i.to_s }
+      case val
+      when Array
+        {'L' => val.map {|i| convert_to_attribute_value(i) }}
+      when Hash
+        h = {}
+        val.each {|k, v| h[k] = convert_to_attribute_value(v) }
+        {'M' => h}
+      when TrueClass, FalseClass
+        {'BOOL' => val.to_s}
+      when NilClass
+        {'NULL' => "true"}
       else
-        val = val.to_s
-      end
+        suffix = ''
+        obj = val
 
-      case obj
-      when DynamoDB::Binary
-        {"B#{suffix}" => val}
-      when String
-        {"S#{suffix}" => val}
-      when Numeric
-        {"N#{suffix}" => val}
-      else
-        raise 'must not happen'
+        if val.kind_of?(Set)
+          suffix = 'S'
+          obj = val.first
+          val = val.map {|i| i.to_s }
+        else
+          val = val.to_s
+        end
+
+        case obj
+        when DynamoDB::Binary
+          {"B#{suffix}" => val}
+        when String
+          {"S#{suffix}" => val}
+        when Numeric
+          {"N#{suffix}" => val}
+        else
+          raise 'must not happen'
+        end
       end
     end
 
@@ -935,22 +944,34 @@ module DynamoDB
       h = {}
 
       (item || {}).sort_by {|a, b| a }.map do |name, val|
-        val = val.map do |val_type, ddb_val|
-          case val_type
-          when 'NS'
-            ddb_val.map {|i| str_to_num(i) }
-          when 'N'
-            str_to_num(ddb_val)
-          else
-            ddb_val
-          end
-        end
-
-        val = val.first if val.length == 1
-        h[name] = val
+        h[name] = convert_to_ruby_value0(val)
       end
 
       return h
+    end
+
+    def convert_to_ruby_value0(val)
+      val = val.map do |val_type, ddb_val|
+        case val_type
+        when 'L'
+          ddb_val.map {|i| convert_to_ruby_value0(i) }
+        when 'M'
+          h = {}
+          ddb_val.map {|k, v| h[k] = convert_to_ruby_value0(v) }
+          h
+        when 'NS'
+          ddb_val.map {|i| str_to_num(i) }
+        when 'N'
+          str_to_num(ddb_val)
+        when 'NULL'
+          nil
+        else
+          ddb_val
+        end
+      end
+
+      val = val.first if val.length == 1
+      val
     end
 
     def do_insert(parsed)
