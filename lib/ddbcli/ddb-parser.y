@@ -488,7 +488,28 @@ rule
   value_or_null : value | NULL
 
   value : single_value
+        | map
         | value_list
+
+  map : '{' '}'
+        {
+          {}
+        }
+      | '{' map_items '}'
+        {
+          val[1]
+        }
+
+  map_items : map_item
+            | map_items ',' map_item
+              {
+                val[0].merge(val[2])
+              }
+
+  map_item : identifier ':' value
+             {
+               {val[0] => val[2]}
+             }
 
   single_value  : NUMBER_VALUE
                 | STRING_VALUE
@@ -547,6 +568,7 @@ rule
 
 require 'strscan'
 require 'ddbcli/ddb-binary'
+require 'set'
 
 module DynamoDB
 
