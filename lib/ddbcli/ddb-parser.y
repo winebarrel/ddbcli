@@ -496,6 +496,7 @@ rule
         | value_list
         | list
         | map
+        | BOOL
 
   list : '[' ']'
        | '[' list_items ']'
@@ -719,10 +720,16 @@ def scan
       yield [tok, tok]
     elsif (tok = @ss.scan /\|(?:.*)/)
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]
+    elsif (tok = @ss.scan /\|(?:.*)/)
+      yield [:RUBY_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan /\!(?:.*)/)
       yield [:SHELL_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan %r|[-.0-9a-z_]*|i)
-      yield [:IDENTIFIER, tok]
+      if ['true', 'false'].include?(tok)
+        yield [:BOOL, 'true' == tok]
+      else
+        yield [:IDENTIFIER, tok]
+      end
     else
       raise_error(tok, @prev_tokens, @ss)
     end

@@ -915,6 +915,8 @@ module DynamoDB
         h = {}
         val.each {|k, v| h[k] = convert_to_attribute_value(v) }
         {'M' => h}
+      when TrueClass, FalseClass
+        {'BOOL' => val.to_s}
       else
         suffix = ''
         obj = val
