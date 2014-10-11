@@ -82,6 +82,11 @@ rule
                struct(:USE, :endpoint_or_region => val[1])
              }
 
+            | USE STRING
+             {
+               struct(:USE, :endpoint_or_region => val[1])
+             }
+
   create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_clause
                 {
                   struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
@@ -522,7 +527,11 @@ rule
                 val[0].merge(val[2])
               }
 
-  map_item : identifier ':' value
+  map_item : IDENTIFIER ':' value
+             {
+               {val[0] => val[2]}
+             }
+           | STRING ':' value
              {
                {val[0] => val[2]}
              }
@@ -706,13 +715,13 @@ def scan
       yield [:STRING_VALUE, tok.slice(1...-1).gsub(/""/, '"')]
     elsif (tok = @ss.scan /\d+(?:\.\d+)?/)
       yield [:NUMBER_VALUE, (tok =~ /\./ ? tok.to_f : tok.to_i)]
-    elsif (tok = @ss.scan /[,\(\)\*\/\[\]\{\}]/)
+    elsif (tok = @ss.scan /[,\(\)\*\/\[\]\{\}:]/)
       yield [tok, tok]
     elsif (tok = @ss.scan /\|(?:.*)/)
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan /\!(?:.*)/)
       yield [:SHELL_SCRIPT, tok.slice(1..-1)]
-    elsif (tok = @ss.scan %r|[-.0-9a-z_:/]*|i)
+    elsif (tok = @ss.scan %r|[-.0-9a-z_]*|i)
       yield [:IDENTIFIER, tok]
     else
       raise_error(tok, @prev_tokens, @ss)

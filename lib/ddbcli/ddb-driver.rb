@@ -910,7 +910,7 @@ module DynamoDB
     def convert_to_attribute_value(val)
       case val
       when Array
-        {'L' => val.map {|v| convert_to_attribute_value(v) }}
+        {'L' => val.map {|i| convert_to_attribute_value(i) }}
       when Hash
         h = {}
         val.each {|k, v| h[k] = convert_to_attribute_value(v) }
@@ -944,22 +944,32 @@ module DynamoDB
       h = {}
 
       (item || {}).sort_by {|a, b| a }.map do |name, val|
-        val = val.map do |val_type, ddb_val|
-          case val_type
-          when 'NS'
-            ddb_val.map {|i| str_to_num(i) }
-          when 'N'
-            str_to_num(ddb_val)
-          else
-            ddb_val
-          end
-        end
-
-        val = val.first if val.length == 1
-        h[name] = val
+        h[name] = convert_to_ruby_value0(val)
       end
 
       return h
+    end
+
+    def convert_to_ruby_value0(val)
+      val = val.map do |val_type, ddb_val|
+        case val_type
+        when 'L'
+          ddb_val.map {|i| convert_to_ruby_value0(i) }
+        when 'M'
+          h = {}
+          ddb_val.map {|k, v| h[k] = convert_to_ruby_value0(v) }
+          h
+        when 'NS'
+          ddb_val.map {|i| str_to_num(i) }
+        when 'N'
+          str_to_num(ddb_val)
+        else
+          ddb_val
+        end
+      end
+
+      val = val.first if val.length == 1
+      val
     end
 
     def do_insert(parsed)
