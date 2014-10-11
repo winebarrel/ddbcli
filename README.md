@@ -33,7 +33,7 @@ ddbcli # show prompt
 
 ## Demo
 
-![ddbcli demo](https://bitbucket.org/winebarrel/ddbcli/downloads/ddbcli-demo.gif)
+![ddbcli demo](https://raw.githubusercontent.com/winebarrel/ddbcli/master/etc/ddbcli-demo.gif)
 
 ## GROUP BY (Aggregate)
 
