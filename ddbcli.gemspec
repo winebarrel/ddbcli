@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'sgwr_dts@yahoo.co.jp'
   spec.description   = 'ddbcli is an interactive command-line client of Amazon DynamoDB.'
   spec.summary       = spec.description
-  spec.homepage      = 'https://bitbucket.org/winebarrel/ddbcli'
+  spec.homepage      = 'https://github.com/winebarrel/ddbcli'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)

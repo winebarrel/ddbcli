@@ -82,6 +82,11 @@ rule
                struct(:USE, :endpoint_or_region => val[1])
              }
 
+            | USE STRING
+             {
+               struct(:USE, :endpoint_or_region => val[1])
+             }
+
   create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_clause
                 {
                   struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
@@ -395,6 +400,18 @@ rule
                 {
                   struct(:UPDATE_ALL, :table => val[2], :action => val[3], :attrs => val[4], :conds => val[5], :limit => val[6])
                 }
+              | UPDATE IDENTIFIER delete_or_del identifier_list update_where_clause
+                {
+                  attrs = {}
+                  val[3].each {|i| attrs[i] = true }
+                  struct(:UPDATE, :table => val[1], :action => val[2], :attrs => attrs, :conds => val[4])
+                }
+              | UPDATE ALL IDENTIFIER delete_or_del identifier_list scan_where_clause limit_clause
+                {
+                  attrs = {}
+                  val[4].each {|i| attrs[i] = true }
+                  struct(:UPDATE_ALL, :table => val[2], :action => val[3], :attrs => attrs, :conds => val[5], :limit => val[6])
+                }
 
   set_or_add : SET
                {
@@ -405,6 +422,15 @@ rule
                  :ADD
                }
 
+  delete_or_del : DELETE
+                  {
+                    :DELETE
+                  }
+                | DEL
+                  {
+                    :DELETE
+                  }
+
   attr_to_update_list : attr_to_update
                         {
                           [val[0]]
@@ -414,7 +440,7 @@ rule
                           val[0] + [val[2]]
                         }
 
-  attr_to_update : IDENTIFIER EQ value_or_null
+  attr_to_update : IDENTIFIER EQ value
                    {
                      [val[0], val[2]]
                    }
@@ -485,10 +511,51 @@ rule
                 struct(:NEXT)
               }
 
-  value_or_null : value | NULL
-
   value : single_value
         | value_list
+        | list
+        | map
+        | BOOL
+        | NULL
+
+  list : '[' ']'
+       | '[' list_items ']'
+         {
+           val[1]
+         }
+
+  list_items : value
+               {
+                 [val[0]]
+               }
+             | list_items ',' value
+               {
+                 val[0] + [val[2]]
+               }
+
+  map : '{' '}'
+        {
+          {}
+        }
+      | '{' map_items '}'
+        {
+          val[1]
+        }
+
+  map_items : map_item
+            | map_items ',' map_item
+              {
+                val[0].merge(val[2])
+              }
+
+  map_item : IDENTIFIER ':' value
+             {
+               {val[0] => val[2]}
+             }
+           | STRING ':' value
+             {
+               {val[0] => val[2]}
+             }
 
   single_value  : NUMBER_VALUE
                 | STRING_VALUE
@@ -509,29 +576,29 @@ rule
 
   number_list : NUMBER_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | number_list ',' NUMBER_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   string_list : STRING_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | string_list ',' STRING_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   binary_list : BINARY_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | binary_list ',' BINARY_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   identifier_list : IDENTIFIER
@@ -547,6 +614,7 @@ rule
 
 require 'strscan'
 require 'ddbcli/ddb-binary'
+require 'set'
 
 module DynamoDB
 
@@ -566,6 +634,7 @@ KEYWORDS = %w(
   CONTAINS
   COUNT
   DELETE
+  DEL
   DESCRIBE
   DESC
   DROP
@@ -668,14 +737,20 @@ def scan
       yield [:STRING_VALUE, tok.slice(1...-1).gsub(/""/, '"')]
     elsif (tok = @ss.scan /\d+(?:\.\d+)?/)
       yield [:NUMBER_VALUE, (tok =~ /\./ ? tok.to_f : tok.to_i)]
-    elsif (tok = @ss.scan /[,\(\)\*\/]/)
+    elsif (tok = @ss.scan /[,\(\)\*\/\[\]\{\}:]/)
       yield [tok, tok]
+    elsif (tok = @ss.scan /\|(?:.*)/)
+      yield [:RUBY_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan /\|(?:.*)/)
       yield [:RUBY_SCRIPT, tok.slice(1..-1)]
     elsif (tok = @ss.scan /\!(?:.*)/)
       yield [:SHELL_SCRIPT, tok.slice(1..-1)]
-    elsif (tok = @ss.scan %r|[-.0-9a-z_:/]*|i)
-      yield [:IDENTIFIER, tok]
+    elsif (tok = @ss.scan %r|[-.0-9a-z_]*|i)
+      if ['true', 'false'].include?(tok)
+        yield [:BOOL, 'true' == tok]
+      else
+        yield [:IDENTIFIER, tok]
+      end
     else
       raise_error(tok, @prev_tokens, @ss)
     end
