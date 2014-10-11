@@ -488,8 +488,24 @@ rule
   value_or_null : value | NULL
 
   value : single_value
-        | map
         | value_list
+        | list
+        | map
+
+  list : '[' ']'
+       | '[' list_items ']'
+         {
+           val[1]
+         }
+
+  list_items : value
+               {
+                 [val[0]]
+               }
+             | list_items ',' value
+               {
+                 val[0] + [val[2]]
+               }
 
   map : '{' '}'
         {
