@@ -124,6 +124,11 @@ UPDATE ALL table_name {SET|ADD} attr1 = 'val1', ... [WHERE attr1 = '...' AND ...
   updates items
   ("UPDATE" can update only one record. Please use "UPDATE ALL", when you update more than one.)
 
+UPDATE table_name {SET|ADD} attr1 = 'val1', ... WHERE key1 = '...' AND ...
+UPDATE ALL table_name {SET|ADD} attr1 = 'val1', ... [WHERE attr1 = '...' AND ...] [LIMIT limit]
+  updates items
+  ("UPDATE" can update only one record. Please use "UPDATE ALL", when you update more than one.)
+
 DELETE FROM table_name WHERE key1 = '...' AND ..
 DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
   deletes items

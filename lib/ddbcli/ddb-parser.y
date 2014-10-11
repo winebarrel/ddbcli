@@ -406,7 +406,12 @@ rule
                   val[3].each {|i| attrs[i] = true }
                   struct(:UPDATE, :table => val[1], :action => val[2], :attrs => attrs, :conds => val[4])
                 }
-
+              | UPDATE ALL IDENTIFIER delete_or_del identifier_list scan_where_clause limit_clause
+                {
+                  attrs = {}
+                  val[4].each {|i| attrs[i] = true }
+                  struct(:UPDATE_ALL, :table => val[2], :action => val[3], :attrs => attrs, :conds => val[5], :limit => val[6])
+                }
 
   set_or_add : SET
                {
