@@ -757,12 +757,10 @@ module DynamoDB
 
       parsed.attrs.each do |attr, val|
         h = req_hash['AttributeUpdates'][attr] = {}
+        h['Action'] = parsed.action.to_s.upcase
 
-        if val
-          h['Action'] = parsed.action.to_s.upcase
+        if h['Action'] != 'DELETE'
           h['Value'] = convert_to_attribute_value(val)
-        else
-          h['Action'] = 'DELETE'
         end
       end # attribute updates
 

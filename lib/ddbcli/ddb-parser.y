@@ -400,6 +400,13 @@ rule
                 {
                   struct(:UPDATE_ALL, :table => val[2], :action => val[3], :attrs => val[4], :conds => val[5], :limit => val[6])
                 }
+              | UPDATE IDENTIFIER delete_or_del identifier_list update_where_clause
+                {
+                  attrs = {}
+                  val[3].each {|i| attrs[i] = true }
+                  struct(:UPDATE, :table => val[1], :action => val[2], :attrs => attrs, :conds => val[4])
+                }
+
 
   set_or_add : SET
                {
@@ -409,6 +416,15 @@ rule
                {
                  :ADD
                }
+
+  delete_or_del : DELETE
+                  {
+                    :DELETE
+                  }
+                | DEL
+                  {
+                    :DELETE
+                  }
 
   attr_to_update_list : attr_to_update
                         {
@@ -613,6 +629,7 @@ KEYWORDS = %w(
   CONTAINS
   COUNT
   DELETE
+  DEL
   DESCRIBE
   DESC
   DROP
