@@ -163,8 +163,14 @@ Binary
 Identifier
   `ABCD...` or Non-keywords
 
-Array
+Set
   ('String', 'String', ...), (1, 2, 3, ...)
+
+List
+  ['String', (1, 2, 3), {foo: 'FOO', bar: 'BAR'}, ...]
+
+Map
+  {key1:'String', "key2":(1, 2, 3), key3: ['FOO', 'BAR'], ...}
 
 
 ##### Operator #####
