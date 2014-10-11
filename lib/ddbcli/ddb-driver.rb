@@ -911,7 +911,7 @@ module DynamoDB
       suffix = ''
       obj = val
 
-      if val.kind_of?(Array)
+      if val.kind_of?(Set)
         suffix = 'S'
         obj = val.first
         val = val.map {|i| i.to_s }

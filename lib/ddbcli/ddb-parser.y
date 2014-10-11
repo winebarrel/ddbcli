@@ -530,29 +530,29 @@ rule
 
   number_list : NUMBER_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | number_list ',' NUMBER_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   string_list : STRING_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | string_list ',' STRING_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   binary_list : BINARY_VALUE
                 {
-                  [val[0]]
+                  Set[val[0]]
                 }
               | binary_list ',' BINARY_VALUE
                 {
-                   val[0] + [val[2]]
+                   val[0] + Set[val[2]]
                 }
 
   identifier_list : IDENTIFIER

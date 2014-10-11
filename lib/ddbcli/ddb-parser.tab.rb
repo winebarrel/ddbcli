@@ -1645,42 +1645,42 @@ module_eval(<<'.,.,', 'ddb-parser.y', 527)
 
 module_eval(<<'.,.,', 'ddb-parser.y', 532)
   def _reduce_145(val, _values)
-                      [val[0]]
+                      Set[val[0]]
                 
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 536)
   def _reduce_146(val, _values)
-                       val[0] + [val[2]]
+                       val[0] + Set[val[2]]
                 
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 541)
   def _reduce_147(val, _values)
-                      [val[0]]
+                      Set[val[0]]
                 
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 545)
   def _reduce_148(val, _values)
-                       val[0] + [val[2]]
+                       val[0] + Set[val[2]]
                 
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 550)
   def _reduce_149(val, _values)
-                      [val[0]]
+                      Set[val[0]]
                 
   end
 .,.,
 
 module_eval(<<'.,.,', 'ddb-parser.y', 554)
   def _reduce_150(val, _values)
-                       val[0] + [val[2]]
+                       val[0] + Set[val[2]]
                 
   end
 .,.,
