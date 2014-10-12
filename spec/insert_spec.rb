@@ -46,5 +46,40 @@ CREATE TABLE `employees` (
   "str_array"=>["A", "B", "C"]}]
       )
     end
+
+    it 'insert list/map/bool/null' do
+      ddbcli(<<-'EOS')
+        insert into employees (
+          emp_no,
+          birth_date,
+          bool1,
+          bool2,
+          null_val,
+          list,
+          map
+        ) values (
+          1,
+          '1977-11-11',
+          true,
+          false,
+          null,
+          [1, "2", 3, ["FOO", "BAR"], {foo: "foo", bar: 100}],
+          {foo: "foo", "bar": [1, 2, 3, {zoo: "zoo"}]}
+        )
+      EOS
+
+      out = ddbcli('select all * from employees')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1977-11-11",
+  "bool1"=>true,
+  "bool2"=>false,
+  "emp_no"=>1,
+  "list"=>[1, "2", 3, ["FOO", "BAR"], {"bar"=>100, "foo"=>"foo"}],
+  "map"=>{"bar"=>[1, 2, 3, {"zoo"=>"zoo"}], "foo"=>"foo"},
+  "null_val"=>nil}]
+      )
+    end
   end
 end

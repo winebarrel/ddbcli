@@ -552,7 +552,7 @@ rule
              {
                {val[0] => val[2]}
              }
-           | STRING ':' value
+           | STRING_VALUE ':' value
              {
                {val[0] => val[2]}
              }
@@ -717,9 +717,11 @@ def scan
         '='  => :EQ,
       }.fetch(tok)
       yield [sym, tok]
-    elsif (tok = @ss.scan KEYWORD_REGEXP)
+    elsif (tok = @ss.check KEYWORD_REGEXP) and @ss.rest.slice(tok.length) !~ /\A\w/
+      tok = @ss.scan KEYWORD_REGEXP
       yield [tok.upcase.to_sym, tok]
-    elsif (tok = @ss.scan /NULL/i)
+    elsif (tok = @ss.check /NULL/i) and @ss.rest.slice(tok.length) !~ /\A\w/
+      tok = @ss.scan /NULL/i
       yield [:NULL, nil]
     elsif (tok = @ss.scan /`(?:[^`]|``)*`/)
       yield [:IDENTIFIER, tok.slice(1...-1).gsub(/``/, '`')]
