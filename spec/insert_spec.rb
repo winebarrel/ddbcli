@@ -81,5 +81,45 @@ CREATE TABLE `employees` (
   "null_val"=>nil}]
       )
     end
+
+    it 'insert error (1)' do
+      sql = <<-'EOS'
+        insert into employees (
+          emp_no,
+          birth_date,
+          num,
+          str
+        ) values (
+          1,
+          '1977-11-11',
+          2
+        )
+      EOS
+
+      expect {
+        ddbcli(sql)
+      }.to raise_error(%|// number of attribute name and value are different: ["emp_no", "birth_date", "num", "str"] != [1, "1977-11-11", 2]\n\n|)
+    end
+
+    it 'insert error (2)' do
+      sql = <<-'EOS'
+        insert into employees (
+          emp_no,
+          birth_date,
+          num,
+          str
+        ) values (
+          1,
+          '1977-11-11',
+          2,
+          'XXX',
+          'YYY'
+        )
+      EOS
+
+      expect {
+        ddbcli(sql)
+      }.to raise_error(%|// number of attribute name and value are different: ["emp_no", "birth_date", "num", "str"] != [1, "1977-11-11", 2, "XXX", "YYY"]\n\n|)
+    end
   end
 end
