@@ -578,7 +578,10 @@ module DynamoDB
           'WriteCapacityUnits' => parsed.capacity[:write],
         }
       else
-        req_hash['ProvisionedThroughput'] = table_info['ProvisionedThroughput']
+        req_hash['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => table_info['ProvisionedThroughput']['ReadCapacityUnits'],
+          'WriteCapacityUnits' => table_info['ProvisionedThroughput']['WriteCapacityUnits'],
+        }
       end
 
       @client.query('CreateTable', req_hash)
