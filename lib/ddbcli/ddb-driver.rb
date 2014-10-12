@@ -998,6 +998,11 @@ module DynamoDB
             },
           }
 
+
+          if parsed.attrs.length != val_list.length
+            raise DynamoDB::Error, "number of attribute name and value are different: #{parsed.attrs.inspect} != #{val_list.inspect}"
+          end
+
           parsed.attrs.zip(val_list).each do |name, val|
             h[name] = convert_to_attribute_value(val)
           end
