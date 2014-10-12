@@ -64,7 +64,7 @@ DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
 
 ## Help
 
-```
+```sql
 ##### Query #####
 
 SHOW TABLES [LIMIT num] [LIKE '...']
@@ -227,4 +227,13 @@ Append
 .retry_interval  SECOND?        displays a retry interval second or changes it
 .timeout         SECOND?        displays a timeout second or changes it
 .version                        displays a version
+```
+
+# Test
+
+```sh
+# http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar
+bundle install
+bundle exec rake
 ```
