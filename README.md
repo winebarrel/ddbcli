@@ -3,6 +3,7 @@
 ddbcli is an interactive command-line client of Amazon DynamoDB.
 
 [![Gem Version](https://badge.fury.io/rb/ddbcli.png)](http://badge.fury.io/rb/ddbcli)
+[![Build Status](https://travis-ci.org/winebarrel/ddbcli.svg?branch=master)](https://travis-ci.org/winebarrel/ddbcli)
 
 ## Installation
 
@@ -64,7 +65,7 @@ DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
 
 ## Help
 
-```
+```sql
 ##### Query #####
 
 SHOW TABLES [LIMIT num] [LIKE '...']
@@ -227,4 +228,13 @@ Append
 .retry_interval  SECOND?        displays a retry interval second or changes it
 .timeout         SECOND?        displays a timeout second or changes it
 .version                        displays a version
+```
+
+# Test
+
+```sh
+# http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar
+bundle install
+bundle exec rake
 ```
