@@ -578,7 +578,10 @@ module DynamoDB
           'WriteCapacityUnits' => parsed.capacity[:write],
         }
       else
-        req_hash['ProvisionedThroughput'] = table_info['ProvisionedThroughput']
+        req_hash['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => table_info['ProvisionedThroughput']['ReadCapacityUnits'],
+          'WriteCapacityUnits' => table_info['ProvisionedThroughput']['WriteCapacityUnits'],
+        }
       end
 
       @client.query('CreateTable', req_hash)
@@ -994,6 +997,11 @@ module DynamoDB
               'Item' => h,
             },
           }
+
+
+          if parsed.attrs.length != val_list.length
+            raise DynamoDB::Error, "number of attribute name and value are different: #{parsed.attrs.inspect} != #{val_list.inspect}"
+          end
 
           parsed.attrs.zip(val_list).each do |name, val|
             h[name] = convert_to_attribute_value(val)

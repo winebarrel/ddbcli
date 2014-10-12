@@ -195,8 +195,6 @@ describe 'ddbcli' do
   end
 
   it 'create table like' do
-    pending('GSI does not work in DynamoDB Local')
-
     ddbcli(<<-'EOS')
       CREATE TABLE `foo` (
         `id`  NUMBER HASH,
