@@ -512,7 +512,6 @@ VALUES
       )
     end
 
-
     it 'update false' do
       ddbcli('update all employees set hire_date = false where gender = "M"')
       out = ddbcli('select all * from employees')
@@ -579,6 +578,146 @@ VALUES
   "first_name"=>"Tristan",
   "gender"=>"M",
   "hire_date"=>false,
+  "last_name"=>"Biran"}]
+      )
+    end
+
+    it 'update list' do
+      ddbcli('update all employees set hire_date = [1, 2, ["foo", "bar"]] where gender = "M"')
+      out = ddbcli('select all * from employees')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1956-05-15",
+  "emp_no"=>2,
+  "first_name"=>"Cathie",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Keohane"},
+ {"birth_date"=>"1961-10-19",
+  "emp_no"=>2,
+  "first_name"=>"Collette",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Ghemri"},
+ {"birth_date"=>"1964-04-30",
+  "emp_no"=>2,
+  "first_name"=>"Akhilish",
+  "gender"=>"F",
+  "hire_date"=>"1985-03-21",
+  "last_name"=>"Isaak"},
+ {"birth_date"=>"1963-07-14",
+  "emp_no"=>1,
+  "first_name"=>"Katsuyuki",
+  "gender"=>"F",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "hire_date"=>"1989-12-28",
+  "last_name"=>"Weedon"},
+ {"birth_date"=>"1964-12-29",
+  "emp_no"=>7,
+  "first_name"=>"Mack",
+  "gender"=>"F",
+  "hire_date"=>"1988-02-25",
+  "last_name"=>"Hambrick"},
+ {"birth_date"=>"1955-04-26",
+  "emp_no"=>4,
+  "first_name"=>"Zine",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Butner"},
+ {"birth_date"=>"1957-09-16",
+  "emp_no"=>4,
+  "first_name"=>"Aemilian",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Roccetti"},
+ {"birth_date"=>"1959-07-01",
+  "emp_no"=>4,
+  "first_name"=>"Dayanand",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Waterhouse"},
+ {"birth_date"=>"1961-04-28",
+  "emp_no"=>4,
+  "first_name"=>"Selwyn",
+  "gender"=>"F",
+  "hire_date"=>"1994-08-12",
+  "last_name"=>"Parascandalo"},
+ {"birth_date"=>"1962-07-06",
+  "emp_no"=>4,
+  "first_name"=>"Tristan",
+  "gender"=>"M",
+  "hire_date"=>[1, 2, ["foo", "bar"]],
+  "last_name"=>"Biran"}]
+      )
+    end
+
+    it 'update map' do
+      ddbcli('update all employees set hire_date = {foo:"bar", zoo:[1, 2, 3]} where gender = "M"')
+      out = ddbcli('select all * from employees')
+      out = JSON.parse(out)
+
+      expect(out).to eq(
+[{"birth_date"=>"1956-05-15",
+  "emp_no"=>2,
+  "first_name"=>"Cathie",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "last_name"=>"Keohane"},
+ {"birth_date"=>"1961-10-19",
+  "emp_no"=>2,
+  "first_name"=>"Collette",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "last_name"=>"Ghemri"},
+ {"birth_date"=>"1964-04-30",
+  "emp_no"=>2,
+  "first_name"=>"Akhilish",
+  "gender"=>"F",
+  "hire_date"=>"1985-03-21",
+  "last_name"=>"Isaak"},
+ {"birth_date"=>"1963-07-14",
+  "emp_no"=>1,
+  "first_name"=>"Katsuyuki",
+  "gender"=>"F",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "hire_date"=>"1989-12-28",
+  "last_name"=>"Weedon"},
+ {"birth_date"=>"1964-12-29",
+  "emp_no"=>7,
+  "first_name"=>"Mack",
+  "gender"=>"F",
+  "hire_date"=>"1988-02-25",
+  "last_name"=>"Hambrick"},
+ {"birth_date"=>"1955-04-26",
+  "emp_no"=>4,
+  "first_name"=>"Zine",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "last_name"=>"Butner"},
+ {"birth_date"=>"1957-09-16",
+  "emp_no"=>4,
+  "first_name"=>"Aemilian",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "last_name"=>"Roccetti"},
+ {"birth_date"=>"1959-07-01",
+  "emp_no"=>4,
+  "first_name"=>"Dayanand",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
+  "last_name"=>"Waterhouse"},
+ {"birth_date"=>"1961-04-28",
+  "emp_no"=>4,
+  "first_name"=>"Selwyn",
+  "gender"=>"F",
+  "hire_date"=>"1994-08-12",
+  "last_name"=>"Parascandalo"},
+ {"birth_date"=>"1962-07-06",
+  "emp_no"=>4,
+  "first_name"=>"Tristan",
+  "gender"=>"M",
+  "hire_date"=>{"foo"=>"bar", "zoo"=>[1, 2, 3]},
   "last_name"=>"Biran"}]
       )
     end
