@@ -3,14 +3,16 @@ require 'ddbcli/ddb-error'
 module DynamoDB
   class Endpoint
 
+    # http://docs.aws.amazon.com/general/latest/gr/rande.html#ddb_region
     ENDPOINTS = {
       'dynamodb.us-east-1.amazonaws.com'      => 'us-east-1',
-      'dynamodb.us-west-1.amazonaws.com'      => 'us-west-1',
       'dynamodb.us-west-2.amazonaws.com'      => 'us-west-2',
+      'dynamodb.us-west-1.amazonaws.com'      => 'us-west-1',
       'dynamodb.eu-west-1.amazonaws.com'      => 'eu-west-1',
-      'dynamodb.ap-northeast-1.amazonaws.com' => 'ap-northeast-1',
+      'dynamodb.eu-central-1.amazonaws.com'   => 'eu-central-1',
       'dynamodb.ap-southeast-1.amazonaws.com' => 'ap-southeast-1',
       'dynamodb.ap-southeast-2.amazonaws.com' => 'ap-southeast-2',
+      'dynamodb.ap-northeast-1.amazonaws.com' => 'ap-northeast-1',
       'dynamodb.sa-east-1.amazonaws.com'      => 'sa-east-1',
     }
 
