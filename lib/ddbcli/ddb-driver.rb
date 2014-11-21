@@ -179,7 +179,7 @@ module DynamoDB
         req_hash['ExclusiveStartTableName'] = last_evaluated_table_name if last_evaluated_table_name
         res_data = @client.query('ListTables', req_hash)
         table_names.concat(res_data['TableNames'])
-        req_hash['LastEvaluatedTableName']
+        res_data['LastEvaluatedTableName']
       end
 
       letn = nil
