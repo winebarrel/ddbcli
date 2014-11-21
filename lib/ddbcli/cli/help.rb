@@ -25,16 +25,17 @@ CREATE TABLE table_name (
   [, GLOBAL INDEX index1_name (hash_attr1 {STRING|NUMBER|BINARY} [, range_attr1 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
    , GLOBAL INDEX index2_name (hash_attr2 {STRING|NUMBER|BINARY} [, range_attr2 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
    , ...]
-) READ = num WRITE = num
+) READ = num WRITE = num [STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}]
   creates a table
 
-CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num]
+CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num] [STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}]
   creates a table like another table
 
 DROP TABLE table_name [, table_name2, ...]
   deletes tables
 
-ALTER TABLE table_name READ = num WRITE = num
+ALTER TABLE table_name {READ = num WRITE = num|STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}}
+
   updates the provisioned throughput
 
 ALTER TABLE table_name CHANGE INDEX index_name READ = num WRITE = num
