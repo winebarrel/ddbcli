@@ -305,6 +305,8 @@ module DynamoDB
         :write => throughput['WriteCapacityUnits'],
       }
 
+      stream = table_info['StreamSpecification']
+
       quote = lambda {|i| '`' + i.gsub('`', '``') + '`' } # `
 
       buf = "CREATE TABLE #{quote[table_name]} ("
@@ -343,6 +345,11 @@ module DynamoDB
 
       buf << "\n)"
       buf << ' ' + throughput.map {|k, v| "#{k}=#{v}" }.join(' ')
+
+      if stream and stream['StreamEnabled']
+        buf << " stream=#{stream['StreamViewType']}"
+      end
+
       buf << "\n\n"
 
       return buf
