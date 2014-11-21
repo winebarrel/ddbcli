@@ -69,9 +69,20 @@ rule
 
   alter_stmt : ALTER TABLE IDENTIFIER capacity_clause
                {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3])
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => nil)
                }
-
+             | ALTER TABLE IDENTIFIER stream_clause
+               {
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => nil, :stream => val[3])
+               }
+             | ALTER TABLE IDENTIFIER capacity_clause stream_clause
+               {
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => val[4])
+               }
+             | ALTER TABLE IDENTIFIER stream_clause capacity_clause
+               {
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[4], :stream => val[3])
+               }
              | ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
                {
                  struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6])
@@ -113,7 +124,11 @@ rule
                             {:capacity => val[1], :stream => val[0]}
                            }
 
-  stream_clause : STREAM EQ stream_view_type
+  stream_clause : STREAM EQ BOOL
+                  {
+                    val[2]
+                  }
+                | STREAM EQ stream_view_type
                   {
                     val[2]
                   }
