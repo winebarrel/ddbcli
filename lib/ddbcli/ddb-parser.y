@@ -87,23 +87,41 @@ rule
                struct(:USE, :endpoint_or_region => val[1])
              }
 
-  create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_clause
+  create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_stream_clause
                 {
-                  struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
+                  struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6][:capacity], :stream => val[6][:stream]))
                 }
-              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_or_stream_clause
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER
                 {
-                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5][:capacity])
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil, :stream => nil)
+                }
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_stream_clause
+                {
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5][:capacity], :stream => val[5][:stream])
                 }
 
-  capacity_or_stream_clause :
-                              {
-                                {:capacity => nil, :stream => nil}
-                              }
-                            | capacity_clause
-                              {
-                                {:capacity => val[0], :stream => nil}
-                              }
+  capacity_stream_clause : capacity_clause
+                           {
+                            {:capacity => val[0], :stream => nil}
+                           }
+                         | capacity_clause stream_clause
+                           {
+                            {:capacity => val[0], :stream => val[1]}
+                           }
+                         | stream_clause capacity_clause
+                           {
+                            {:capacity => val[1], :stream => val[0]}
+                           }
+
+  stream_clause : STREAM EQ stream_view_type
+                  {
+                    val[2]
+                  }
+
+  stream_view_type : NEW_IMAGE
+                   | OLD_IMAGE
+                   | NEW_AND_OLD_IMAGES
+                   | KEYS_ONLY
 
   create_definition : IDENTIFIER attr_type_list HASH
                       {
@@ -657,9 +675,12 @@ KEYWORDS = %w(
   KEYS_ONLY
   LIKE
   LIMIT
+  NEW_AND_OLD_IMAGES
+  NEW_IMAGE
   NEXT
   NOT
   NUMBER
+  OLD_IMAGE
   ORDER
   RANGE
   READ
@@ -668,6 +689,7 @@ KEYWORDS = %w(
   SET
   SHOW
   STATUS
+  STREAM
   STRING
   TABLES
   TABLE

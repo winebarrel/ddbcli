@@ -251,7 +251,6 @@ module DynamoDB
     def do_show_regions(parsed)
       DynamoDB::Endpoint.regions
     end
-
     def do_show_create_table(parsed)
       table_info = @client.query('DescribeTable', 'TableName' => parsed.table)['Table']
       table_name = table_info['TableName']
@@ -395,6 +394,13 @@ module DynamoDB
           'WriteCapacityUnits' => parsed.capacity[:write],
         },
       }
+
+      if parsed.stream
+        req_hash['StreamSpecification'] = {
+          'StreamEnabled'  => true,
+          'StreamViewType' => parsed.stream.to_s.upcase
+        }
+      end
 
       # hash key
       req_hash['AttributeDefinitions'] = [
