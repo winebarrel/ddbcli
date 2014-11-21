@@ -106,6 +106,10 @@ rule
                 {
                   struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil, :stream => nil)
                 }
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER stream_clause
+                {
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil, :stream => val[5])
+                }
               | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_stream_clause
                 {
                   struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5][:capacity], :stream => val[5][:stream])

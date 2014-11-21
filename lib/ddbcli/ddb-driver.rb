@@ -614,6 +614,21 @@ module DynamoDB
         }
       end
 
+      if not parsed.stream.nil?
+        if parsed.stream
+          view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+          req_hash['StreamSpecification'] = {
+            'StreamEnabled'  => true,
+            'StreamViewType' => view_type,
+          }
+        else
+          req_hash['StreamSpecification'] = {'StreamEnabled' => false}
+        end
+      elsif table_info['StreamSpecification']
+        req_hash['StreamSpecification'] = table_info['StreamSpecification']
+      end
+
       @client.query('CreateTable', req_hash)
       nil
     end
