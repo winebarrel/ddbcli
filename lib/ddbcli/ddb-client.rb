@@ -38,7 +38,16 @@ module DynamoDB
     def set_endpoint_and_region(endpoint_or_region)
       if endpoint_or_region.kind_of?(URI)
         @endpoint = endpoint_or_region
-        @region = [@endpoint.host, @endpoint.port].join(':')
+
+        aws_endpoint, region = DynamoDB::Endpoint::ENDPOINTS.find do |k, v|
+          @endpoint.host[k]
+        end
+
+        if region
+          @region = region
+        else
+          @region = [@endpoint.host, @endpoint.port].join(':')
+        end
       else
         host, @region = DynamoDB::Endpoint.endpoint_and_region(endpoint_or_region)
         @endpoint = URI.parse("https://#{host}")
