@@ -251,6 +251,7 @@ module DynamoDB
     def do_show_regions(parsed)
       DynamoDB::Endpoint.regions
     end
+
     def do_show_create_table(parsed)
       table_info = @client.query('DescribeTable', 'TableName' => parsed.table)['Table']
       table_name = table_info['TableName']
@@ -357,10 +358,6 @@ module DynamoDB
 
     def do_alter_table(parsed)
       req_hash = {'TableName' => parsed.table}
-      throughput = {
-        'ReadCapacityUnits'  => parsed.capacity[:read],
-        'WriteCapacityUnits' => parsed.capacity[:write]
-      }
 
       if parsed.index_name
         req_hash['GlobalSecondaryIndexUpdates'] = [{
@@ -370,7 +367,25 @@ module DynamoDB
           },
         }]
       else
-        req_hash['ProvisionedThroughput'] = throughput
+        if parsed.capacity
+          req_hash['ProvisionedThroughput'] = {
+            'ReadCapacityUnits'  => parsed.capacity[:read],
+            'WriteCapacityUnits' => parsed.capacity[:write],
+          }
+        end
+
+        unless parsed.stream.nil?
+          if parsed.stream
+            view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+            req_hash['StreamSpecification'] = {
+              'StreamEnabled'  => true,
+              'StreamViewType' => view_type,
+            }
+          else
+            req_hash['StreamSpecification'] = {'StreamEnabled' => false}
+          end
+        end
       end
 
       @client.query('UpdateTable', req_hash)
@@ -403,9 +418,11 @@ module DynamoDB
       }
 
       if parsed.stream
+        view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
         req_hash['StreamSpecification'] = {
           'StreamEnabled'  => true,
-          'StreamViewType' => parsed.stream.to_s.upcase
+          'StreamViewType' => view_type,
         }
       end
 
