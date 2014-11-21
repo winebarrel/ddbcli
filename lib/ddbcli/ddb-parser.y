@@ -91,14 +91,19 @@ rule
                 {
                   struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
                 }
-              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_or_stream_clause
                 {
-                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil)
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5][:capacity])
                 }
-              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_clause
-                {
-                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5])
-                }
+
+  capacity_or_stream_clause :
+                              {
+                                {:capacity => nil, :stream => nil}
+                              }
+                            | capacity_clause
+                              {
+                                {:capacity => val[0], :stream => nil}
+                              }
 
   create_definition : IDENTIFIER attr_type_list HASH
                       {
