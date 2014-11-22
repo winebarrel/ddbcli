@@ -15,7 +15,7 @@ module DynamoDB
 
     SERVICE_NAME = 'dynamodb'
     API_VERSION  = '2012-08-10'
-    USER_AGENT   = "ddbcli/#{Version}"
+    USER_AGENT   = "ddbcli/#{DynamoDB::VERSION}"
 
     DEFAULT_TIMEOUT = 60
 
