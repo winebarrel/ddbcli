@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
-Version = DynamoDB::VERSION
 HISTORY_FILE = File.join((ENV['HOME'] || ENV['USERPROFILE'] || '.'), '.ddbcli_history')
 HISTSIZE = 500
 
 require 'rubygems'
 require 'ddbcli'
 require 'readline'
+
+Version = DynamoDB::VERSION
 
 options = parse_options
 
