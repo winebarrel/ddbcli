@@ -205,18 +205,22 @@ rule
                             val[0] + [val[2]]
                           }
 
-  index_definition : INDEX IDENTIFIER '(' IDENTIFIER attr_type_list ')' index_type_definition
-                     {
-                       {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
-                     }
-                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
-                     {
-                       {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
-                     }
-                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
-                     {
-                       {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
-                     }
+  index_definition : locat_index_definition
+                   | global_index_definition
+
+  locat_index_definition : INDEX IDENTIFIER '(' IDENTIFIER attr_type_list ')' index_type_definition
+                           {
+                             {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
+                           }
+
+  global_index_definition : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
+                            {
+                              {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
+                            }
+                          | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
+                            {
+                              {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
+                            }
 
   global_index_keys : IDENTIFIER attr_type_list
                       {
