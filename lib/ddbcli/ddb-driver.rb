@@ -61,6 +61,8 @@ module DynamoDB
                  do_show_create_table(parsed)
                when :ALTER_TABLE
                  do_alter_table(parsed)
+               when :ALTER_TABLE_INDEX
+                 do_alter_table_index(parsed)
                when :USE
                  do_use(parsed)
                when :CREATE
@@ -359,34 +361,39 @@ module DynamoDB
     def do_alter_table(parsed)
       req_hash = {'TableName' => parsed.table}
 
-      if parsed.index_name
-        req_hash['GlobalSecondaryIndexUpdates'] = [{
-          'Update' => {
-            'IndexName' => parsed.index_name,
-            'ProvisionedThroughput' => throughput,
-          },
-        }]
-      else
-        if parsed.capacity
-          req_hash['ProvisionedThroughput'] = {
-            'ReadCapacityUnits'  => parsed.capacity[:read],
-            'WriteCapacityUnits' => parsed.capacity[:write],
+      if parsed.capacity
+        req_hash['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => parsed.capacity[:read],
+          'WriteCapacityUnits' => parsed.capacity[:write],
+        }
+      end
+
+      unless parsed.stream.nil?
+        if parsed.stream
+          view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+          req_hash['StreamSpecification'] = {
+            'StreamEnabled'  => true,
+            'StreamViewType' => view_type,
           }
-        end
-
-        unless parsed.stream.nil?
-          if parsed.stream
-            view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
-
-            req_hash['StreamSpecification'] = {
-              'StreamEnabled'  => true,
-              'StreamViewType' => view_type,
-            }
-          else
-            req_hash['StreamSpecification'] = {'StreamEnabled' => false}
-          end
+        else
+          req_hash['StreamSpecification'] = {'StreamEnabled' => false}
         end
       end
+
+      @client.query('UpdateTable', req_hash)
+      nil
+    end
+
+    def do_alter_table_index(parsed)
+      req_hash = {'TableName' => parsed.table}
+
+      req_hash['GlobalSecondaryIndexUpdates'] = [{
+        'Update' => {
+          'IndexName' => parsed.index_name,
+          'ProvisionedThroughput' => throughput,
+        },
+      }]
 
       @client.query('UpdateTable', req_hash)
       nil
