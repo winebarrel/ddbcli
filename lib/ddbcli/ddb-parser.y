@@ -85,7 +85,7 @@ rule
                }
              | ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
                {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6])
+                 struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6], :stream => nil)
                }
 
   use_stmt : USE IDENTIFIER
