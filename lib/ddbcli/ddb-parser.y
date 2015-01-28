@@ -67,26 +67,31 @@ rule
                   val[1]
                 }
 
-  alter_stmt : ALTER TABLE IDENTIFIER capacity_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => nil)
-               }
-             | ALTER TABLE IDENTIFIER stream_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => nil, :stream => val[3])
-               }
-             | ALTER TABLE IDENTIFIER capacity_clause stream_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => val[4])
-               }
-             | ALTER TABLE IDENTIFIER stream_clause capacity_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[4], :stream => val[3])
-               }
-             | ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6], :stream => nil)
-               }
+  alter_stmt : alter_table_stmt
+             | alter_table_index_stmt
+
+
+  alter_table_stmt  :ALTER TABLE IDENTIFIER capacity_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => nil)
+                      }
+                    | ALTER TABLE IDENTIFIER stream_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => nil, :stream => val[3])
+                      }
+                    | ALTER TABLE IDENTIFIER capacity_clause stream_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => val[4])
+                      }
+                    | ALTER TABLE IDENTIFIER stream_clause capacity_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[4], :stream => val[3])
+                      }
+
+  alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :index_name => val[5], :capacity => val[6], :stream => nil)
+                           }
 
   use_stmt : USE IDENTIFIER
              {
