@@ -8,6 +8,8 @@ require 'rubygems'
 require 'ddbcli'
 require 'readline'
 
+Version = DynamoDB::VERSION
+
 options = parse_options
 
 driver = DynamoDB::Driver.new(

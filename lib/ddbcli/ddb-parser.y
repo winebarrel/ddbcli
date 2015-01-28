@@ -67,15 +67,39 @@ rule
                   val[1]
                 }
 
-  alter_stmt : ALTER TABLE IDENTIFIER capacity_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3])
-               }
+  alter_stmt : alter_table_stmt
+             | alter_table_index_stmt
 
-             | ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
-               {
-                 struct(:ALTER_TABLE, :table => val[2], :index_name => val[5], :capacity => val[6])
-               }
+
+  alter_table_stmt  :ALTER TABLE IDENTIFIER capacity_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[3], :stream => nil)
+                      }
+                    | ALTER TABLE IDENTIFIER stream_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => nil, :stream => val[3])
+                      }
+                    | ALTER TABLE IDENTIFIER capacity_clause stream_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[3], :stream => val[4])
+                      }
+                    | ALTER TABLE IDENTIFIER stream_clause capacity_clause
+                      {
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[4], :stream => val[3])
+                      }
+
+  alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE GLOBAL INDEX IDENTIFIER capacity_clause
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[6], :capacity => val[7]})
+                           }
+                         | ALTER TABLE IDENTIFIER ADD global_index_definition_with_capacity
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Create', :index_definition => val[4])
+                           }
+                         | ALTER TABLE IDENTIFIER DROP GLOBAL INDEX IDENTIFIER
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Delete', :index_definition => {:name => val[6]})
+                           }
 
   use_stmt : USE IDENTIFIER
              {
@@ -87,18 +111,49 @@ rule
                struct(:USE, :endpoint_or_region => val[1])
              }
 
-  create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_clause
+  create_stmt : CREATE TABLE IDENTIFIER '(' create_definition ')' capacity_stream_clause
                 {
-                  struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6]))
+                  struct(:CREATE, val[4].merge(:table => val[2], :capacity => val[6][:capacity], :stream => val[6][:stream]))
                 }
               | CREATE TABLE IDENTIFIER LIKE IDENTIFIER
                 {
-                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil)
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil, :stream => nil)
                 }
-              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_clause
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER stream_clause
                 {
-                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5])
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => nil, :stream => val[5])
                 }
+              | CREATE TABLE IDENTIFIER LIKE IDENTIFIER capacity_stream_clause
+                {
+                  struct(:CREATE_LIKE, :table => val[2], :like => val[4], :capacity => val[5][:capacity], :stream => val[5][:stream])
+                }
+
+  capacity_stream_clause : capacity_clause
+                           {
+                            {:capacity => val[0], :stream => nil}
+                           }
+                         | capacity_clause stream_clause
+                           {
+                            {:capacity => val[0], :stream => val[1]}
+                           }
+                         | stream_clause capacity_clause
+                           {
+                            {:capacity => val[1], :stream => val[0]}
+                           }
+
+  stream_clause : STREAM EQ BOOL
+                  {
+                    val[2]
+                  }
+                | STREAM EQ stream_view_type
+                  {
+                    val[2]
+                  }
+
+  stream_view_type : NEW_IMAGE
+                   | OLD_IMAGE
+                   | NEW_AND_OLD_IMAGES
+                   | KEYS_ONLY
 
   create_definition : IDENTIFIER attr_type_list HASH
                       {
@@ -158,18 +213,26 @@ rule
                             val[0] + [val[2]]
                           }
 
-  index_definition : INDEX IDENTIFIER '(' IDENTIFIER attr_type_list ')' index_type_definition
-                     {
-                       {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
-                     }
-                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
-                     {
-                       {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
-                     }
-                   | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
-                     {
-                       {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
-                     }
+  index_definition : locat_index_definition
+                   | global_index_definition
+
+  locat_index_definition : INDEX IDENTIFIER '(' IDENTIFIER attr_type_list ')' index_type_definition
+                           {
+                             {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
+                           }
+
+  global_index_definition : global_index_definition_without_capacity
+                          | global_index_definition_with_capacity
+
+  global_index_definition_without_capacity : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
+                                             {
+                                               {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
+                                             }
+
+  global_index_definition_with_capacity : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
+                                          {
+                                            {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
+                                          }
 
   global_index_keys : IDENTIFIER attr_type_list
                       {
@@ -652,9 +715,12 @@ KEYWORDS = %w(
   KEYS_ONLY
   LIKE
   LIMIT
+  NEW_AND_OLD_IMAGES
+  NEW_IMAGE
   NEXT
   NOT
   NUMBER
+  OLD_IMAGE
   ORDER
   RANGE
   READ
@@ -663,6 +729,7 @@ KEYWORDS = %w(
   SET
   SHOW
   STATUS
+  STREAM
   STRING
   TABLES
   TABLE

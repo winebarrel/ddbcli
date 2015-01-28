@@ -5,16 +5,16 @@ def print_help(options = {})
 ##### Query #####
 
 SHOW TABLES [LIMIT num] [LIKE '...']
-  displays a table list
+  display a table list
 
 SHOW TABLE STATUS [LIKE '...']
-  displays table statues
+  display table statues
 
 SHOW REGIONS
-  displays a region list
+  display a region list
 
 SHOW CREATE TABLE table_name
-  displays a CREATE TABLE statement
+  display a CREATE TABLE statement
 
 CREATE TABLE table_name (
      key_name {STRING|NUMBER|BINARY} HASH
@@ -25,57 +25,63 @@ CREATE TABLE table_name (
   [, GLOBAL INDEX index1_name (hash_attr1 {STRING|NUMBER|BINARY} [, range_attr1 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
    , GLOBAL INDEX index2_name (hash_attr2 {STRING|NUMBER|BINARY} [, range_attr2 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} [READ = num WRITE = num]
    , ...]
-) READ = num WRITE = num
-  creates a table
+) READ = num WRITE = num [STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}]
+  create a table
 
-CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num]
-  creates a table like another table
+CREATE TABLE table_name LIKE another_table_name [READ = num WRITE = num] [STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}]
+  create a table like another table
 
 DROP TABLE table_name [, table_name2, ...]
-  deletes tables
+  delete tables
 
-ALTER TABLE table_name READ = num WRITE = num
-  updates the provisioned throughput
+ALTER TABLE table_name {READ = num WRITE = num|STREAM = {true|false|NEW_IMAGE|OLD_IMAGE|NEW_AND_OLD_IMAGES|KEYS_ONLY}}
+  update the provisioned throughput
 
-ALTER TABLE table_name CHANGE INDEX index_name READ = num WRITE = num
-  updates GSI provisioned throughput
+ALTER TABLE table_name CHANGE GLOBAL INDEX index_name READ = num WRITE = num
+  update GSI provisioned throughput
+
+ALTER TABLE table_name ADD GLOBAL INDEX index_name (hash_attr1 {STRING|NUMBER|BINARY} [, range_attr1 {STRING|NUMBER|BINARY}]) {ALL|KEYS_ONLY|INCLUDE (attr, ...)} READ = num WRITE = num
+  add GSI
+
+ALTER TABLE table_name DROP GLOBAL INDEX index_name
+  delete GSI
 
 GET {*|attr1,attr2,...} FROM table_name WHERE key1 = '...' AND ...
-  gets items
+  get items
 
 INSERT INTO table_name (attr1, attr2, ...) VALUES ('val1', 'val2', ...), ('val3', 'val4', ...), ...
 INSERT INTO table_name SELECT ...
 INSERT INTO table_name SELECT ALL ...
-  creates items
+  create items
 
 UPDATE table_name {SET|ADD} attr1 = 'val1', ... WHERE key1 = '...' AND ...
 UPDATE ALL table_name {SET|ADD} attr1 = 'val1', ... [WHERE attr1 = '...' AND ...] [LIMIT limit]
-  updates items
+  update items
   ("UPDATE" can update only one record. Please use "UPDATE ALL", when you update more than one.)
 
 UPDATE table_name DEL[ETE] attr1, ... WHERE key1 = '...' AND ...
 UPDATE ALL table_name DEL[ETE] attr1, ... [WHERE attr1 = '...' AND ...] [LIMIT limit]
-  updates items (delete attribute)
+  update items (delete attribute)
 
 DELETE FROM table_name WHERE key1 = '...' AND ..
 DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
-  deletes items
+  delete items
   ("DELETE" can delete only one record. Please use "DELETE ALL", when you update more than one.)
 
 SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [HAVING attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
 SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
 SELECT segment/total_segments {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
-  queries using the Query/Scan action
+  query using the Query/Scan action
   see http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/QueryAndScan.html
 
 DESC[RIBE] table_name
-  displays information about the table
+  display information about the table
 
 USE region_or_endpoint
-  changes an endpoint
+  change an endpoint
 
 NEXT
-  displays a continuation of a result
+  display a continuation of a result
   (NEXT statement is published after SELECT statement)
 
 
@@ -154,16 +160,16 @@ Append
 
 ##### Command #####
 
-.help                           displays this message
-.quit | .exit                   exits ddbcli
-.consistent      (true|false)?  displays ConsistentRead parameter or changes it
-.iteratable      (true|false)?  displays iteratable option or changes it
+.help                           display this message
+.quit | .exit                   exit ddbcli
+.consistent      (true|false)?  display ConsistentRead parameter or changes it
+.iteratable      (true|false)?  display iteratable option or changes it
                                 all results are displayed if true
-.debug           (true|false)?  displays a debug status or changes it
-.retry           NUM?           displays number of times of a retry or changes it
-.retry_interval  SECOND?        displays a retry interval second or changes it
-.timeout         SECOND?        displays a timeout second or changes it
-.version                        displays a version
+.debug           (true|false)?  display a debug status or changes it
+.retry           NUM?           display number of times of a retry or changes it
+.retry_interval  SECOND?        display a retry interval second or changes it
+.timeout         SECOND?        display a timeout second or changes it
+.version                        display a version
 
 EOS
 

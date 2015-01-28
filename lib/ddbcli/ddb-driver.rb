@@ -61,6 +61,8 @@ module DynamoDB
                  do_show_create_table(parsed)
                when :ALTER_TABLE
                  do_alter_table(parsed)
+               when :ALTER_TABLE_INDEX
+                 do_alter_table_index(parsed)
                when :USE
                  do_use(parsed)
                when :CREATE
@@ -179,7 +181,7 @@ module DynamoDB
         req_hash['ExclusiveStartTableName'] = last_evaluated_table_name if last_evaluated_table_name
         res_data = @client.query('ListTables', req_hash)
         table_names.concat(res_data['TableNames'])
-        req_hash['LastEvaluatedTableName']
+        res_data['LastEvaluatedTableName']
       end
 
       letn = nil
@@ -287,6 +289,7 @@ module DynamoDB
 
       (table_info['GlobalSecondaryIndexes'] || []).each do |i|
         index_name = i['IndexName']
+        next unless i['KeySchema']
         key_names = i['KeySchema'].map {|j| j['AttributeName'] }
         proj_type = i['Projection']['ProjectionType']
         proj_attrs = i['Projection']['NonKeyAttributes']
@@ -305,6 +308,8 @@ module DynamoDB
         :read  => throughput['ReadCapacityUnits'],
         :write => throughput['WriteCapacityUnits'],
       }
+
+      stream = table_info['StreamSpecification']
 
       quote = lambda {|i| '`' + i.gsub('`', '``') + '`' } # `
 
@@ -344,6 +349,11 @@ module DynamoDB
 
       buf << "\n)"
       buf << ' ' + throughput.map {|k, v| "#{k}=#{v}" }.join(' ')
+
+      if stream and stream['StreamEnabled']
+        buf << " stream=#{stream['StreamViewType']}"
+      end
+
       buf << "\n\n"
 
       return buf
@@ -351,20 +361,59 @@ module DynamoDB
 
     def do_alter_table(parsed)
       req_hash = {'TableName' => parsed.table}
-      throughput = {
-        'ReadCapacityUnits'  => parsed.capacity[:read],
-        'WriteCapacityUnits' => parsed.capacity[:write]
-      }
 
-      if parsed.index_name
-        req_hash['GlobalSecondaryIndexUpdates'] = [{
+      if parsed.capacity
+        req_hash['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => parsed.capacity[:read],
+          'WriteCapacityUnits' => parsed.capacity[:write],
+        }
+      end
+
+      unless parsed.stream.nil?
+        if parsed.stream
+          view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+          req_hash['StreamSpecification'] = {
+            'StreamEnabled'  => true,
+            'StreamViewType' => view_type,
+          }
+        else
+          req_hash['StreamSpecification'] = {'StreamEnabled' => false}
+        end
+      end
+
+      @client.query('UpdateTable', req_hash)
+      nil
+    end
+
+    def do_alter_table_index(parsed)
+      req_hash = {'TableName' => parsed.table}
+      index_definition = parsed.index_definition
+      gsi_updates = req_hash['GlobalSecondaryIndexUpdates'] = []
+
+      case parsed.action
+      when 'Update'
+        gsi_updates << {
           'Update' => {
-            'IndexName' => parsed.index_name,
-            'ProvisionedThroughput' => throughput,
+            'IndexName' => index_definition[:name],
+            'ProvisionedThroughput' => {
+              'ReadCapacityUnits'  => index_definition[:capacity][:read],
+              'WriteCapacityUnits' => index_definition[:capacity][:write],
+            },
           },
-        }]
-      else
-        req_hash['ProvisionedThroughput'] = throughput
+        }
+      when 'Create'
+        attr_defs = req_hash['AttributeDefinitions'] = []
+
+        gsi_updates << {
+          'Create' => define_index(index_definition, attr_defs, :global => true),
+        }
+      when 'Delete'
+        gsi_updates << {
+          'Delete' => {
+            'IndexName' => index_definition[:name],
+          },
+        }
       end
 
       @client.query('UpdateTable', req_hash)
@@ -395,6 +444,15 @@ module DynamoDB
           'WriteCapacityUnits' => parsed.capacity[:write],
         },
       }
+
+      if parsed.stream
+        view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+        req_hash['StreamSpecification'] = {
+          'StreamEnabled'  => true,
+          'StreamViewType' => view_type,
+        }
+      end
 
       # hash key
       req_hash['AttributeDefinitions'] = [
@@ -428,89 +486,12 @@ module DynamoDB
       local_indices = (parsed.indices || []).select {|i| not i[:global] }
       global_indices = (parsed.indices || []).select {|i| i[:global] }
 
-      define_attribute = lambda do |attr_name, attr_type|
-        attr_defs = req_hash['AttributeDefinitions']
-        same_attr = attr_defs.find {|i| i['AttributeName'] == attr_name }
-
-        if same_attr
-          if same_attr['AttributeType'] != attr_type
-            raise DynamoDB::Error, "different types have been defined: #{attr_name}"
-          end
-        else
-          attr_defs << {
-            'AttributeName' => attr_name,
-            'AttributeType' => attr_type,
-          }
-        end
-      end
-
-      define_index = lambda do |idx_def, def_idx_opts|
-        global_idx = def_idx_opts[:global]
-
-
-        if global_idx
-          idx_def[:keys].each do |key_type, name_type|
-            define_attribute.call(name_type[:key], name_type[:type])
-          end
-        else
-          define_attribute.call(idx_def[:key], idx_def[:type])
-        end
-
-        secondary_index = {
-          'IndexName' => idx_def[:name],
-          'Projection' => {
-            'ProjectionType' => idx_def[:projection][:type],
-          }
-        }
-
-        if global_idx
-          secondary_index['KeySchema'] = []
-
-          [:hash, :range].each do |key_type|
-            name_type = idx_def[:keys][key_type]
-
-            if name_type
-              secondary_index['KeySchema'] << {
-                'AttributeName' => name_type[:key],
-                'KeyType'       => key_type.to_s.upcase,
-              }
-            end
-          end
-        else
-          secondary_index['KeySchema'] = [
-            {
-              'AttributeName' => parsed.hash[:name],
-              'KeyType'       => 'HASH',
-            },
-            {
-              'AttributeName' => idx_def[:key],
-              'KeyType'       => 'RANGE',
-            },
-          ]
-        end
-
-        if idx_def[:projection][:attrs]
-          secondary_index['Projection']['NonKeyAttributes'] = idx_def[:projection][:attrs]
-        end
-
-        if global_idx
-          capacity = idx_def[:capacity] || parsed.capacity
-
-          secondary_index['ProvisionedThroughput'] = {
-            'ReadCapacityUnits'  => capacity[:read],
-            'WriteCapacityUnits' => capacity[:write],
-          }
-        end
-
-        secondary_index
-      end # define_index
-
       # local secondary index
       unless local_indices.empty?
         req_hash['LocalSecondaryIndexes'] = []
 
         local_indices.each do |idx_def|
-          local_secondary_index = define_index.call(idx_def, :global => false)
+          local_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => false, :hash_name => parsed.hash[:name])
           req_hash['LocalSecondaryIndexes'] << local_secondary_index
         end
       end
@@ -520,13 +501,88 @@ module DynamoDB
         req_hash['GlobalSecondaryIndexes'] = []
 
         global_indices.each do |idx_def|
-          global_secondary_index = define_index.call(idx_def, :global => true)
+          global_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => true, :capacity => parsed.capacity)
           req_hash['GlobalSecondaryIndexes'] << global_secondary_index
         end
       end
 
       @client.query('CreateTable', req_hash)
       nil
+    end
+
+    def define_attribute(attr_name, attr_type, attr_defs)
+      same_attr = attr_defs.find {|i| i['AttributeName'] == attr_name }
+
+      if same_attr
+        if same_attr['AttributeType'] != attr_type
+          raise DynamoDB::Error, "different types have been defined: #{attr_name}"
+        end
+      else
+        attr_defs << {
+          'AttributeName' => attr_name,
+          'AttributeType' => attr_type,
+        }
+      end
+    end
+
+    def define_index(idx_def, attr_defs, def_idx_opts)
+      global_idx = def_idx_opts[:global]
+
+      if global_idx
+        idx_def[:keys].each do |key_type, name_type|
+          define_attribute(name_type[:key], name_type[:type], attr_defs)
+        end
+      else
+        define_attribute(idx_def[:key], idx_def[:type], attr_defs)
+      end
+
+      secondary_index = {
+        'IndexName' => idx_def[:name],
+        'Projection' => {
+          'ProjectionType' => idx_def[:projection][:type],
+        }
+      }
+
+      if global_idx
+        secondary_index['KeySchema'] = []
+
+        [:hash, :range].each do |key_type|
+          name_type = idx_def[:keys][key_type]
+
+          if name_type
+            secondary_index['KeySchema'] << {
+              'AttributeName' => name_type[:key],
+              'KeyType'       => key_type.to_s.upcase,
+            }
+          end
+        end
+      else
+        secondary_index['KeySchema'] = [
+          {
+            'AttributeName' => def_idx_opts.fetch(:hash_name),
+            'KeyType'       => 'HASH',
+          },
+          {
+            'AttributeName' => idx_def[:key],
+            'KeyType'       => 'RANGE',
+          },
+        ]
+      end
+
+      if idx_def[:projection][:attrs]
+        secondary_index['Projection']['NonKeyAttributes'] = idx_def[:projection][:attrs]
+      end
+
+      if global_idx
+        capacity = idx_def[:capacity] || def_idx_opts.fetch(:capacity)
+
+        secondary_index['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => capacity[:read],
+          'WriteCapacityUnits' => capacity[:write],
+        }
+      end
+
+      secondary_index
     end
 
     def do_create_like(parsed)
@@ -582,6 +638,21 @@ module DynamoDB
           'ReadCapacityUnits'  => table_info['ProvisionedThroughput']['ReadCapacityUnits'],
           'WriteCapacityUnits' => table_info['ProvisionedThroughput']['WriteCapacityUnits'],
         }
+      end
+
+      if not parsed.stream.nil?
+        if parsed.stream
+          view_type = (parsed.stream == true) ? 'KEYS_ONLY' : parsed.stream.to_s.upcase
+
+          req_hash['StreamSpecification'] = {
+            'StreamEnabled'  => true,
+            'StreamViewType' => view_type,
+          }
+        else
+          req_hash['StreamSpecification'] = {'StreamEnabled' => false}
+        end
+      elsif table_info['StreamSpecification']
+        req_hash['StreamSpecification'] = table_info['StreamSpecification']
       end
 
       @client.query('CreateTable', req_hash)
