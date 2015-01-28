@@ -100,7 +100,9 @@ describe 'ddbcli' do
    {"AttributeName"=>"val", "KeyType"=>"RANGE"}],
  "TableStatus"=>"ACTIVE",
  "ProvisionedThroughput"=>
-  {"NumberOfDecreasesToday"=>0,
+  {"LastIncreaseDateTime"=>0.0,
+   "LastDecreaseDateTime"=>0.0,
+   "NumberOfDecreasesToday"=>0,
    "ReadCapacityUnits"=>2,
    "WriteCapacityUnits"=>2},
  "TableSizeBytes"=>0,
