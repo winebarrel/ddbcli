@@ -1076,7 +1076,7 @@ module_eval(<<'.,.,', 'ddb-parser.y', 87)
 
 module_eval(<<'.,.,', 'ddb-parser.y', 92)
   def _reduce_33(val, _values)
-                                 struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[5], :capacity => val[6]})
+                                 struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[6], :capacity => val[7]})
                            
   end
 .,.,
