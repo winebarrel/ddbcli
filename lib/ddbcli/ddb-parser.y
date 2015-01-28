@@ -73,24 +73,32 @@ rule
 
   alter_table_stmt  :ALTER TABLE IDENTIFIER capacity_clause
                       {
-                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => nil)
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[3], :stream => nil)
                       }
                     | ALTER TABLE IDENTIFIER stream_clause
                       {
-                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => nil, :stream => val[3])
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => nil, :stream => val[3])
                       }
                     | ALTER TABLE IDENTIFIER capacity_clause stream_clause
                       {
-                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[3], :stream => val[4])
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[3], :stream => val[4])
                       }
                     | ALTER TABLE IDENTIFIER stream_clause capacity_clause
                       {
-                        struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[4], :stream => val[3])
+                        struct(:ALTER_TABLE, :table => val[2], :capacity => val[4], :stream => val[3])
                       }
 
   alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE GLOBAL INDEX IDENTIFIER capacity_clause
                            {
-                             struct(:ALTER_TABLE_INDEX, :table => val[2], :index_name => val[5], :capacity => val[6], :stream => nil)
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[5], :capacity => val[6]})
+                           }
+                         | ALTER TABLE IDENTIFIER ADD global_index_definition_with_capacity
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Create', :index_definition => val[4])
+                           }
+                         | ALTER TABLE IDENTIFIER DROP GLOBAL INDEX IDENTIFIER
+                           {
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Delete', :index_definition => {:name => val[6]})
                            }
 
   use_stmt : USE IDENTIFIER
@@ -213,14 +221,18 @@ rule
                              {:name => val[1], :key => val[3], :type => val[4], :projection => val[6]}
                            }
 
-  global_index_definition : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
-                            {
-                              {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
-                            }
-                          | GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
-                            {
-                              {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
-                            }
+  global_index_definition : global_index_definition_without_capacity
+                          | global_index_definition_with_capacity
+
+  global_index_definition_without_capacity : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition
+                                             {
+                                               {:name => val[2], :keys => val[4], :projection => val[6], :global => true}
+                                             }
+
+  global_index_definition_with_capacity : GLOBAL INDEX IDENTIFIER '(' global_index_keys ')' index_type_definition strict_capacity_clause
+                                          {
+                                            {:name => val[2], :keys => val[4], :projection => val[6], :capacity => val[7], :global => true}
+                                          }
 
   global_index_keys : IDENTIFIER attr_type_list
                       {
