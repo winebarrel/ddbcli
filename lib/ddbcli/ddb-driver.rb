@@ -491,7 +491,7 @@ module DynamoDB
         req_hash['LocalSecondaryIndexes'] = []
 
         local_indices.each do |idx_def|
-          local_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => false)
+          local_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => false, :hash_name => parsed.hash[:name])
           req_hash['LocalSecondaryIndexes'] << local_secondary_index
         end
       end
@@ -501,7 +501,7 @@ module DynamoDB
         req_hash['GlobalSecondaryIndexes'] = []
 
         global_indices.each do |idx_def|
-          global_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => true)
+          global_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => true, :capacity => parsed.capacity)
           req_hash['GlobalSecondaryIndexes'] << global_secondary_index
         end
       end
@@ -559,7 +559,7 @@ module DynamoDB
       else
         secondary_index['KeySchema'] = [
           {
-            'AttributeName' => parsed.hash[:name],
+            'AttributeName' => def_idx_opts.fetch(:hash_name),
             'KeyType'       => 'HASH',
           },
           {
@@ -574,7 +574,7 @@ module DynamoDB
       end
 
       if global_idx
-        capacity = idx_def[:capacity] || parsed.capacity
+        capacity = idx_def[:capacity] || def_idx_opts.fetch(:capacity)
 
         secondary_index['ProvisionedThroughput'] = {
           'ReadCapacityUnits'  => capacity[:read],
