@@ -1,3 +1,3 @@
 module DynamoDB
-  VERSION = "0.4.2.beta2"
+  VERSION = "0.5.0.beta"
 end
