@@ -289,6 +289,7 @@ module DynamoDB
 
       (table_info['GlobalSecondaryIndexes'] || []).each do |i|
         index_name = i['IndexName']
+        next unless i['KeySchema']
         key_names = i['KeySchema'].map {|j| j['AttributeName'] }
         proj_type = i['Projection']['ProjectionType']
         proj_attrs = i['Projection']['NonKeyAttributes']
@@ -390,18 +391,22 @@ module DynamoDB
       index_definition = parsed.index_definition
       gsi_updates = req_hash['GlobalSecondaryIndexUpdates'] = []
 
-
       case parsed.action
       when 'Update'
         gsi_updates << {
           'Update' => {
             'IndexName' => index_definition[:name],
-            'ProvisionedThroughput' => throughput,
+            'ProvisionedThroughput' => {
+              'ReadCapacityUnits'  => index_definition[:capacity][:read],
+              'WriteCapacityUnits' => index_definition[:capacity][:write],
+            },
           },
         }
       when 'Create'
+        attr_defs = req_hash['AttributeDefinitions'] = []
+
         gsi_updates << {
-          'Create' => define_index(index_definition, :global => true),
+          'Create' => define_index(index_definition, attr_defs, :global => true),
         }
       when 'Delete'
         gsi_updates << {
@@ -481,28 +486,12 @@ module DynamoDB
       local_indices = (parsed.indices || []).select {|i| not i[:global] }
       global_indices = (parsed.indices || []).select {|i| i[:global] }
 
-      define_attribute = lambda do |attr_name, attr_type|
-        attr_defs = req_hash['AttributeDefinitions']
-        same_attr = attr_defs.find {|i| i['AttributeName'] == attr_name }
-
-        if same_attr
-          if same_attr['AttributeType'] != attr_type
-            raise DynamoDB::Error, "different types have been defined: #{attr_name}"
-          end
-        else
-          attr_defs << {
-            'AttributeName' => attr_name,
-            'AttributeType' => attr_type,
-          }
-        end
-      end
-
       # local secondary index
       unless local_indices.empty?
         req_hash['LocalSecondaryIndexes'] = []
 
         local_indices.each do |idx_def|
-          local_secondary_index = define_index(idx_def, :global => false)
+          local_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => false)
           req_hash['LocalSecondaryIndexes'] << local_secondary_index
         end
       end
@@ -512,7 +501,7 @@ module DynamoDB
         req_hash['GlobalSecondaryIndexes'] = []
 
         global_indices.each do |idx_def|
-          global_secondary_index = define_index(idx_def, :global => true)
+          global_secondary_index = define_index(idx_def, req_hash['AttributeDefinitions'], :global => true)
           req_hash['GlobalSecondaryIndexes'] << global_secondary_index
         end
       end
@@ -521,15 +510,30 @@ module DynamoDB
       nil
     end
 
-    def define_index(idx_def, def_idx_opts)
+    def define_attribute(attr_name, attr_type, attr_defs)
+      same_attr = attr_defs.find {|i| i['AttributeName'] == attr_name }
+
+      if same_attr
+        if same_attr['AttributeType'] != attr_type
+          raise DynamoDB::Error, "different types have been defined: #{attr_name}"
+        end
+      else
+        attr_defs << {
+          'AttributeName' => attr_name,
+          'AttributeType' => attr_type,
+        }
+      end
+    end
+
+    def define_index(idx_def, attr_defs, def_idx_opts)
       global_idx = def_idx_opts[:global]
 
       if global_idx
         idx_def[:keys].each do |key_type, name_type|
-          define_attribute.call(name_type[:key], name_type[:type])
+          define_attribute(name_type[:key], name_type[:type], attr_defs)
         end
       else
-        define_attribute.call(idx_def[:key], idx_def[:type])
+        define_attribute(idx_def[:key], idx_def[:type], attr_defs)
       end
 
       secondary_index = {

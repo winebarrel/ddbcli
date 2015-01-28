@@ -90,7 +90,7 @@ rule
 
   alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE GLOBAL INDEX IDENTIFIER capacity_clause
                            {
-                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[5], :capacity => val[6]})
+                             struct(:ALTER_TABLE_INDEX, :table => val[2], :action => 'Update', :index_definition => {:name => val[6], :capacity => val[7]})
                            }
                          | ALTER TABLE IDENTIFIER ADD global_index_definition_with_capacity
                            {
