@@ -88,7 +88,7 @@ rule
                         struct(:ALTER_TABLE, :table => val[2], :index_name => nil, :capacity => val[4], :stream => val[3])
                       }
 
-  alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE INDEX IDENTIFIER capacity_clause
+  alter_table_index_stmt : ALTER TABLE IDENTIFIER CHANGE GLOBAL INDEX IDENTIFIER capacity_clause
                            {
                              struct(:ALTER_TABLE_INDEX, :table => val[2], :index_name => val[5], :capacity => val[6], :stream => nil)
                            }
