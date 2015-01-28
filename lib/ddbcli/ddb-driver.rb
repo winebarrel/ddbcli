@@ -387,13 +387,29 @@ module DynamoDB
 
     def do_alter_table_index(parsed)
       req_hash = {'TableName' => parsed.table}
+      index_definition = parsed.index_definition
+      gsi_updates = req_hash['GlobalSecondaryIndexUpdates'] = []
 
-      req_hash['GlobalSecondaryIndexUpdates'] = [{
-        'Update' => {
-          'IndexName' => parsed.index_name,
-          'ProvisionedThroughput' => throughput,
-        },
-      }]
+
+      case parsed.action
+      when 'Update'
+        gsi_updates << {
+          'Update' => {
+            'IndexName' => index_definition[:name],
+            'ProvisionedThroughput' => throughput,
+          },
+        }
+      when 'Create'
+        gsi_updates << {
+          'Create' => define_index(index_definition, :global => true),
+        }
+      when 'Delete'
+        gsi_updates << {
+          'Delete' => {
+            'IndexName' => index_definition[:name],
+          },
+        }
+      end
 
       @client.query('UpdateTable', req_hash)
       nil
@@ -481,73 +497,12 @@ module DynamoDB
         end
       end
 
-      define_index = lambda do |idx_def, def_idx_opts|
-        global_idx = def_idx_opts[:global]
-
-
-        if global_idx
-          idx_def[:keys].each do |key_type, name_type|
-            define_attribute.call(name_type[:key], name_type[:type])
-          end
-        else
-          define_attribute.call(idx_def[:key], idx_def[:type])
-        end
-
-        secondary_index = {
-          'IndexName' => idx_def[:name],
-          'Projection' => {
-            'ProjectionType' => idx_def[:projection][:type],
-          }
-        }
-
-        if global_idx
-          secondary_index['KeySchema'] = []
-
-          [:hash, :range].each do |key_type|
-            name_type = idx_def[:keys][key_type]
-
-            if name_type
-              secondary_index['KeySchema'] << {
-                'AttributeName' => name_type[:key],
-                'KeyType'       => key_type.to_s.upcase,
-              }
-            end
-          end
-        else
-          secondary_index['KeySchema'] = [
-            {
-              'AttributeName' => parsed.hash[:name],
-              'KeyType'       => 'HASH',
-            },
-            {
-              'AttributeName' => idx_def[:key],
-              'KeyType'       => 'RANGE',
-            },
-          ]
-        end
-
-        if idx_def[:projection][:attrs]
-          secondary_index['Projection']['NonKeyAttributes'] = idx_def[:projection][:attrs]
-        end
-
-        if global_idx
-          capacity = idx_def[:capacity] || parsed.capacity
-
-          secondary_index['ProvisionedThroughput'] = {
-            'ReadCapacityUnits'  => capacity[:read],
-            'WriteCapacityUnits' => capacity[:write],
-          }
-        end
-
-        secondary_index
-      end # define_index
-
       # local secondary index
       unless local_indices.empty?
         req_hash['LocalSecondaryIndexes'] = []
 
         local_indices.each do |idx_def|
-          local_secondary_index = define_index.call(idx_def, :global => false)
+          local_secondary_index = define_index(idx_def, :global => false)
           req_hash['LocalSecondaryIndexes'] << local_secondary_index
         end
       end
@@ -557,13 +512,73 @@ module DynamoDB
         req_hash['GlobalSecondaryIndexes'] = []
 
         global_indices.each do |idx_def|
-          global_secondary_index = define_index.call(idx_def, :global => true)
+          global_secondary_index = define_index(idx_def, :global => true)
           req_hash['GlobalSecondaryIndexes'] << global_secondary_index
         end
       end
 
       @client.query('CreateTable', req_hash)
       nil
+    end
+
+    def define_index(idx_def, def_idx_opts)
+      global_idx = def_idx_opts[:global]
+
+      if global_idx
+        idx_def[:keys].each do |key_type, name_type|
+          define_attribute.call(name_type[:key], name_type[:type])
+        end
+      else
+        define_attribute.call(idx_def[:key], idx_def[:type])
+      end
+
+      secondary_index = {
+        'IndexName' => idx_def[:name],
+        'Projection' => {
+          'ProjectionType' => idx_def[:projection][:type],
+        }
+      }
+
+      if global_idx
+        secondary_index['KeySchema'] = []
+
+        [:hash, :range].each do |key_type|
+          name_type = idx_def[:keys][key_type]
+
+          if name_type
+            secondary_index['KeySchema'] << {
+              'AttributeName' => name_type[:key],
+              'KeyType'       => key_type.to_s.upcase,
+            }
+          end
+        end
+      else
+        secondary_index['KeySchema'] = [
+          {
+            'AttributeName' => parsed.hash[:name],
+            'KeyType'       => 'HASH',
+          },
+          {
+            'AttributeName' => idx_def[:key],
+            'KeyType'       => 'RANGE',
+          },
+        ]
+      end
+
+      if idx_def[:projection][:attrs]
+        secondary_index['Projection']['NonKeyAttributes'] = idx_def[:projection][:attrs]
+      end
+
+      if global_idx
+        capacity = idx_def[:capacity] || parsed.capacity
+
+        secondary_index['ProvisionedThroughput'] = {
+          'ReadCapacityUnits'  => capacity[:read],
+          'WriteCapacityUnits' => capacity[:write],
+        }
+      end
+
+      secondary_index
     end
 
     def do_create_like(parsed)
