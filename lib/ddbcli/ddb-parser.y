@@ -293,15 +293,15 @@ rule
 
   scan_stmt : SELECT ALL attrs_to_get FROM IDENTIFIER use_index_clause scan_where_clause limit_clause
               {
-                struct(:SCAN, :attrs => val[2], :table => val[4], :conds => val[6], :limit => val[7], :count => false, :segment => nil, :total_segments => nil)
+                struct(:SCAN, :attrs => val[2], :table => val[4], :index => val[5], :conds => val[6], :limit => val[7], :count => false, :segment => nil, :total_segments => nil)
               }
             | SELECT ALL COUNT '(' '*' ')' FROM IDENTIFIER use_index_clause scan_where_clause limit_clause
               {
-                struct(:SCAN, :attrs => [], :table => val[7], :conds => val[9], :limit => val[10], :count => true, :segment => nil, :total_segments => nil)
+                struct(:SCAN, :attrs => [], :table => val[7], :index => val[8], :conds => val[9], :limit => val[10], :count => true, :segment => nil, :total_segments => nil)
               }
             | SELECT NUMBER_VALUE '/' NUMBER_VALUE attrs_to_get FROM IDENTIFIER use_index_clause scan_where_clause limit_clause
               {
-                struct(:SCAN, :attrs => val[4], :table => val[6], :conds => val[8], :limit => val[9], :count => false, :segment => val[1], :total_segments => val[3])
+                struct(:SCAN, :attrs => val[4], :table => val[6], :index => val[7], :conds => val[8], :limit => val[9], :count => false, :segment => val[1], :total_segments => val[3])
               }
 
   get_stmt : GET attrs_to_get FROM IDENTIFIER update_where_clause
