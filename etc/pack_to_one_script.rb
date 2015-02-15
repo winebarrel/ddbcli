@@ -11,7 +11,7 @@ require LIB_DIR.join('ddbcli/version')
 
 DEST_FILE = "pkg/ddbcli-#{DynamoDB::VERSION}"
 
-JSON_VERSION = '1.8.1'
+JSON_VERSION = '1.8.2'
 JSON_ARCHIVE = ROOT_DIR.join("v#{JSON_VERSION}.tar.gz")
 JSON_ROOT_DIR = ROOT_DIR.join("json-#{JSON_VERSION}")
 JSON_LIB_DIR = JSON_ROOT_DIR.join('lib')
