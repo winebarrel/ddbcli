@@ -133,8 +133,8 @@ DELETE ALL FROM table_name WHERE [WHERE attr1 = '...' AND ...] [ORDER {ASC|DESC}
   ("DELETE" can delete only one record. Please use "DELETE ALL", when you update more than one.)
 
 SELECT {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE key1 = '...' AND ...] [HAVING attr1 = '...' AND ...] [ORDER {ASC|DESC}] [LIMIT limit]
-SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
-SELECT segment/total_segments {*|attr1,attr2,...|COUNT(*)} FROM table_name [WHERE attr1 = '...' AND ...] [LIMIT limit]
+SELECT ALL {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE attr1 = '...' AND ...] [LIMIT limit]
+SELECT segment/total_segments {*|attr1,attr2,...|COUNT(*)} FROM table_name [USE INDEX (index_name)] [WHERE attr1 = '...' AND ...] [LIMIT limit]
   query using the Query/Scan action
   see http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/QueryAndScan.html
 
