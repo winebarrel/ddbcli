@@ -692,6 +692,7 @@ module DynamoDB
         when 'Scan'
           req_hash['Segment'] = parsed.segment if parsed.segment
           req_hash['TotalSegments'] = parsed.total_segments if parsed.total_segments
+          req_hash['IndexName'] = parsed.index if parsed.index
         end
 
         # XXX: req_hash['ReturnConsumedCapacity'] = ...
