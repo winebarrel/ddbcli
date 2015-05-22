@@ -11,22 +11,6 @@ require LIB_DIR.join('ddbcli/version')
 
 DEST_FILE = "pkg/ddbcli-#{DynamoDB::VERSION}"
 
-JSON_VERSION = '1.8.2'
-JSON_ARCHIVE = ROOT_DIR.join("v#{JSON_VERSION}.tar.gz")
-JSON_ROOT_DIR = ROOT_DIR.join("json-#{JSON_VERSION}")
-JSON_LIB_DIR = JSON_ROOT_DIR.join('lib')
-
-def use_json
-  system("wget -q https://github.com/flori/json/archive/#{JSON_ARCHIVE.basename}")
-  system("tar xf #{JSON_ARCHIVE}")
-
-  begin
-    yield
-  ensure
-    FileUtils.rm_rf([JSON_ROOT_DIR, JSON_ARCHIVE])
-  end
-end
-
 def recursive_print(file, prefix, lib_path, fout, buf = [])
   return if buf.include?(file)
 
@@ -52,12 +36,6 @@ def read_bin_file
   }.join("\n")
 end
 
-json_buf = StringIO.new
-
-use_json do
-  recursive_print('json/pure.rb', 'json', JSON_LIB_DIR, json_buf)
-end
-
 ddbcli_buf = StringIO.new
 recursive_print('ddbcli.rb', 'ddbcli', LIB_DIR, ddbcli_buf)
 
@@ -65,7 +43,6 @@ FileUtils.mkdir_p(ROOT_DIR.join(DEST_FILE).dirname)
 
 ROOT_DIR.join(DEST_FILE).open('wb', 0755) do |f|
   f.puts '#!/usr/bin/env ruby'
-  f.puts json_buf.string
   f.puts ddbcli_buf.string.gsub(%r|require\s+['"]json['"]|m, '')
   f.puts read_bin_file
 end
