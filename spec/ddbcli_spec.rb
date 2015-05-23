@@ -30,6 +30,7 @@ describe 'ddbcli' do
 
     expect(out).to eq(
 {"AttributeDefinitions"=>[{"AttributeName"=>"id", "AttributeType"=>"N"}],
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableName"=>"foo",
  "KeySchema"=>[{"AttributeName"=>"id", "KeyType"=>"HASH"}],
  "TableStatus"=>"ACTIVE",
@@ -60,6 +61,7 @@ describe 'ddbcli' do
 {"AttributeDefinitions"=>
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"}],
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -94,6 +96,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -136,6 +139,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -180,6 +184,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -235,6 +240,7 @@ describe 'ddbcli' do
    "NumberOfDecreasesToday"=>0,
    "ReadCapacityUnits"=>2,
    "WriteCapacityUnits"=>2},
+ "StreamSpecification" => {"StreamEnabled"=>false},
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "GlobalSecondaryIndexes"=>
