@@ -14,7 +14,7 @@ If you are not using RubyGems, you can use the script file that depend on only R
 see https://github.com/winebarrel/ddbcli/releases
 
 ```sh
-https://github.com/winebarrel/ddbcli/releases/download/0.5.1/ddbcli-0.x.x.gz
+https://github.com/winebarrel/ddbcli/releases/download/x.x.x/ddbcli-x.x.x.gz
 gunzip -c ddbcli-0.x.x.gz  > ddbcli
 chmod 755 ddbcli
 ```
