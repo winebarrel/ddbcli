@@ -15,7 +15,7 @@ see https://github.com/winebarrel/ddbcli/releases
 
 ```sh
 https://github.com/winebarrel/ddbcli/releases/download/x.x.x/ddbcli-x.x.x.gz
-gunzip -c ddbcli-0.x.x.gz  > ddbcli
+gunzip -c ddbcli-0.x.x.gz > ddbcli
 chmod 755 ddbcli
 ```
 
