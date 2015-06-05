@@ -7,7 +7,7 @@ def parse_options
   options.access_key_id     = ENV['AWS_ACCESS_KEY_ID']
   options.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
   options.ddb_endpoint_or_region =
-    ENV['AWS_REGION'] || ENV['DDB_ENDPOINT'] || ENV['DDB_REGION'] || 'dynamodb.us-east-1.amazonaws.com'
+    ENV['AWS_REGION'] || ENV['AWS_DEFAULT_REGION'] || ENV['DDB_ENDPOINT'] || ENV['DDB_REGION'] || 'dynamodb.us-east-1.amazonaws.com'
 
   # default value
   options.timeout     = 60
