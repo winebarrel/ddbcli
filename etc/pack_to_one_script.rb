@@ -43,7 +43,7 @@ FileUtils.mkdir_p(ROOT_DIR.join(DEST_FILE).dirname)
 
 ROOT_DIR.join(DEST_FILE).open('wb', 0755) do |f|
   f.puts '#!/usr/bin/env ruby'
-  f.puts ddbcli_buf.string.gsub(%r|require\s+['"]json['"]|m, '')
+  f.puts ddbcli_buf.string
   f.puts read_bin_file
 end
 
