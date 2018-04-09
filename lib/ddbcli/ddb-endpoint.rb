@@ -13,6 +13,7 @@ module DynamoDB
       'dynamodb.ap-southeast-1.amazonaws.com' => 'ap-southeast-1',
       'dynamodb.ap-southeast-2.amazonaws.com' => 'ap-southeast-2',
       'dynamodb.ap-northeast-1.amazonaws.com' => 'ap-northeast-1',
+      'dynamodb.ap-northeast-2.amazonaws.com' => 'ap-northeast-2',
       'dynamodb.sa-east-1.amazonaws.com'      => 'sa-east-1',
     }
 
