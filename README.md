@@ -245,7 +245,7 @@ Append
 # Test
 
 ```sh
-# http://dynamodb-preview.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest_preview.tar.gz
+# see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar &
 bundle install
 bundle exec rake

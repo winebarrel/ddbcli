@@ -30,7 +30,7 @@ describe 'ddbcli' do
 
     expect(out).to eq(
 {"AttributeDefinitions"=>[{"AttributeName"=>"id", "AttributeType"=>"N"}],
- "StreamSpecification" => {"StreamEnabled"=>false},
+ "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo",
  "TableName"=>"foo",
  "KeySchema"=>[{"AttributeName"=>"id", "KeyType"=>"HASH"}],
  "TableStatus"=>"ACTIVE",
@@ -61,7 +61,7 @@ describe 'ddbcli' do
 {"AttributeDefinitions"=>
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"}],
- "StreamSpecification" => {"StreamEnabled"=>false},
+  "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo",
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -96,7 +96,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
- "StreamSpecification" => {"StreamEnabled"=>false},
+ "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo",
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -111,7 +111,8 @@ describe 'ddbcli' do
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "LocalSecondaryIndexes"=>
-  [{"IndexName"=>"idx_bar",
+  [{"IndexArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo/index/idx_bar",
+    "IndexName"=>"idx_bar",
     "KeySchema"=>
      [{"AttributeName"=>"id", "KeyType"=>"HASH"},
       {"AttributeName"=>"val2", "KeyType"=>"RANGE"}],
@@ -139,7 +140,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
- "StreamSpecification" => {"StreamEnabled"=>false},
+ "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo",
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -154,7 +155,8 @@ describe 'ddbcli' do
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "GlobalSecondaryIndexes"=>
-  [{"IndexName"=>"idx_bar",
+  [{"IndexArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo/index/idx_bar",
+    "IndexName"=>"idx_bar",
     "KeySchema"=>[{"AttributeName"=>"val2", "KeyType"=>"HASH"}],
     "Projection"=>{"ProjectionType"=>"ALL"},
     "IndexStatus"=>"ACTIVE",
@@ -184,7 +186,7 @@ describe 'ddbcli' do
   [{"AttributeName"=>"id", "AttributeType"=>"N"},
    {"AttributeName"=>"val", "AttributeType"=>"S"},
    {"AttributeName"=>"val2", "AttributeType"=>"S"}],
- "StreamSpecification" => {"StreamEnabled"=>false},
+ "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo",
  "TableName"=>"foo",
  "KeySchema"=>
   [{"AttributeName"=>"id", "KeyType"=>"HASH"},
@@ -199,7 +201,8 @@ describe 'ddbcli' do
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "GlobalSecondaryIndexes"=>
-  [{"IndexName"=>"idx_bar",
+  [{"IndexArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo/index/idx_bar",
+    "IndexName"=>"idx_bar",
     "KeySchema"=>[{"AttributeName"=>"val2", "KeyType"=>"HASH"}],
     "Projection"=>{"ProjectionType"=>"ALL"},
     "IndexStatus"=>"ACTIVE",
@@ -240,11 +243,12 @@ describe 'ddbcli' do
    "NumberOfDecreasesToday"=>0,
    "ReadCapacityUnits"=>2,
    "WriteCapacityUnits"=>2},
- "StreamSpecification" => {"StreamEnabled"=>false},
+ "TableArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo2",
  "TableSizeBytes"=>0,
  "ItemCount"=>0,
  "GlobalSecondaryIndexes"=>
-  [{"IndexName"=>"idx_bar",
+  [{"IndexArn"=>"arn:aws:dynamodb:ddblocal:000000000000:table/foo2/index/idx_bar",
+    "IndexName"=>"idx_bar",
     "KeySchema"=>[{"AttributeName"=>"val2", "KeyType"=>"HASH"}],
     "Projection"=>{"ProjectionType"=>"ALL"},
     "IndexStatus"=>"ACTIVE",
