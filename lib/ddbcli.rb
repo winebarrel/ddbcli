@@ -6,7 +6,6 @@ require 'ddbcli/ddb-driver'
 require 'ddbcli/ddb-endpoint'
 require 'ddbcli/ddb-error'
 require 'ddbcli/ddb-iteratorable'
-require 'ddbcli/ddb-rubyext'
 
 # CLI
 require 'ddbcli/cli/functions'
