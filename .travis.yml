@@ -1,10 +1,11 @@
 language: ruby
 rvm:
-- 2.0.0
+- 2.4.5
+- 2.5.3
+- 2.6.0
 install:
 - mkdir /tmp/dynamodb
-#- wget -O - http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest | tar xz --directory /tmp/dynamodb
-- wget -O - http://dynamodb-preview.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest_preview.tar.gz | tar xz --directory /tmp/dynamodb
+- wget -O - https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz | tar xz --directory /tmp/dynamodb
 before_script:
 - java -Djava.library.path=/tmp/dynamodb/DynamoDBLocal_lib -jar /tmp/dynamodb/DynamoDBLocal.jar -inMemory &
 script:
