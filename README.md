@@ -202,7 +202,7 @@ Scan (SELECT ALL), QueryFilter (HAVING)
 Ryby
   query | ruby_script
 
-  ex) SELECT ALL * FROM employees WHERE gender = 'M' | birth_date.map {|i| Time.parse(i) };
+  ex) SELECT ALL * FROM employees WHERE gender = 'M' | map {|i| Time.parse(i["birth_date"]) };
       [
         "1957-09-16 00:00:00 +0900",
         "1954-12-16 00:00:00 +0900",
